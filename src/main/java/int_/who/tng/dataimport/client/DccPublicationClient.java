@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(
     name = "dccPublicationClient",
-    url = "${dcc.publication.url}",
+    url = "${dgc.publication.url}",
     configuration = DccPublicationClientConfig.class)
 public interface DccPublicationClient {
 

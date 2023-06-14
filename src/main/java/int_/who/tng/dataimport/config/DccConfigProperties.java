@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties("dcc")
+@ConfigurationProperties("dgc")
 public class DccConfigProperties {
 
     private final KeyStoreWithAlias trustAnchor = new KeyStoreWithAlias();
@@ -38,6 +38,8 @@ public class DccConfigProperties {
     private final Publication publication = new Publication();
 
     private final UploadCertConfig uploadCerts = new UploadCertConfig();
+
+    private final List<String> ignoreCountries = new ArrayList<>();
 
     @Getter
     @Setter

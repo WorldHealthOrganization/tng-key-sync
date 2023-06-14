@@ -6,16 +6,21 @@ spring:
     password: ''
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 dgc:
   publication:
     url: https://ec.europa.eu/assets/eu-dcc
-    allowed-signing-cert-thumbprints: []
+    proxy:
+      host: sia-lb.telekom.de
+      port: 8080
+    allowed-signing-cert-thumbprints:
+      - 84b0309cb751d0660f48d96b7aff5ce950e741916b40264bc7d7c31d875e063b
   trustAnchor:
-    keyStorePath: x
-    keyStorePass: x
-    certificateAlias: x
+    keyStorePath: test_ta.p12
+    keyStorePass: felix
+    certificateAlias: felix_dev_ta
   uploadCerts:
     validity: 365
     commonName: TNG Key Import Upload
-  ignoreCountries: []
+  ignoreCountries:
+      - DE

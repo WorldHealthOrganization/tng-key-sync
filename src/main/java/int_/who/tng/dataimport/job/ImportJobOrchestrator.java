@@ -22,13 +22,16 @@ public class ImportJobOrchestrator {
 
     private final ImportDSCStep importDSCStep;
 
+    private final RemoveIgnoredCountriesStep removeIgnoredCountriesStep;
+
     @EventListener(ApplicationReadyEvent.class)
     public void exec() {
         log.info("Starting DCC Key Import Job");
 
         byte[] archive = downloadArchiveStep.exec();
         List<ExtractArchiveStep.ArchivePemEntry> pemEntries = extractArchiveStep.exec(archive);
-        List<ParseCertificatesStep.ArchiveCertificateEntry> certificateEntries = parseCertificatesStep.exec(pemEntries);
+        List<ExtractArchiveStep.ArchivePemEntry> filteredPemEntries = removeIgnoredCountriesStep.exec(pemEntries);
+        List<ParseCertificatesStep.ArchiveCertificateEntry> certificateEntries = parseCertificatesStep.exec(filteredPemEntries);
         importCSCAStep.exec(certificateEntries);
         importDSCStep.exec(certificateEntries);
 

@@ -36,7 +36,6 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-@Profile("!test")
 public class DccKeyStore {
 
     private final DccConfigProperties dccConfigProperties;
