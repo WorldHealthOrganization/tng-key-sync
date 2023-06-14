@@ -13,31 +13,34 @@ The following steps are executed by the tool:
 3. Extract ZIP Archive
 4. Remove all Certificates of Countries which are on ignore list
 5. Parse all .pem files
-6. Onboard all non-existing CSCA Certificates to TNG Gateway Trusted Party Table (CSCA Certificates will be signed by TrustAnchor)
-7. Create and Onboard SelfSigned Upload Certificates per country (They are required in order to upload the DSC Certificates)
+6. Onboard all non-existing CSCA Certificates to TNG Gateway Trusted Party Table (CSCA Certificates will be signed by
+   TrustAnchor)
+7. Create and Onboard SelfSigned Upload Certificates per country (They are required in order to upload the DSC
+   Certificates)
    (The PrivateKey of the created Upload Certificate will be thrown away after program execution)
-8. Upload all non-existing DSC Certificates to TNG Gateway Signer Information Table (Upload Certificates from Step 7 will be used to sign)
+8. Upload all non-existing DSC Certificates to TNG Gateway Signer Information Table (Upload Certificates from Step 7
+   will be used to sign)
 
 # Setup
 
-Setup Environment Variables to configure the tool. 
+Setup Environment Variables to configure the tool.
 
 *Description and Example value is still tbd*
 
-| ENV                                           | Description                                                          | Example |
-|-----------------------------------------------|----------------------------------------------------------------------|---------|
-| SPRING_DATASOURCE_URL                         |                                                                      |         |    
-| SPRING_DATASOURCE_USERNAME                    |                                                                      |         |    
-| SPRING_DATASOURCE_PASSWORD                    |                                                                      |         |    
-| SPRING_DATASOURCE_DRIVERCLASSNAME             |                                                                      |         |    
-| DGC_PUBLICATION_URL                           |                                                                      |         |    
-| DGC_PUBLICATION_ALLOWEDSIGNINGCERTTHUMBPRINTS |                                                                      |         |    
-| DGC_TRUSTANCHOR_KEYSTOREPATH                  |                                                                      |         |    
-| DGC_TRUSTANCHOR_KEYSTOREPASS                  |                                                                      |         |    
-| DGC_TRUSTANCHOR_CERTIFICATEALIAS              |                                                                      |         |    
-| DGC_UPLOADCERTS_VALIDITY                      |                                                                      |         |    
-| DGC_UPLOADCERTS_COMMONNAME                    |                                                                      |         |
-| DGC_IGNORECOUNTRIES                           | Comma-seperated list of Countries which shall be ignored by the tool | DE,FR   |
+| ENV                                           | Description                                                                                     | Example                                                          |
+|-----------------------------------------------|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| SPRING_DATASOURCE_URL                         | JDBC URL to connect to the database                                                             | jdbc:postgresql://dbHost:5432/dbName                             |    
+| SPRING_DATASOURCE_USERNAME                    | Database User Name                                                                              | psql                                                             |    
+| SPRING_DATASOURCE_PASSWORD                    | Database User Password                                                                          | s3cr3t                                                           |    
+| SPRING_DATASOURCE_DRIVERCLASSNAME             | JDBC Driver Class Name                                                                          | org.postgresql.Driver                                            |    
+| DGC_PUBLICATION_URL                           |                                                                                                 |                                                                  |    
+| DGC_PUBLICATION_ALLOWEDSIGNINGCERTTHUMBPRINTS | List of SHA-256 thumbprints (HEX, lowercase) of allowed signer certificates for the ZIP Archive | 84b0309cb751d0660f48d96b7aff5ce950e741916b40264bc7d7c31d875e063b |    
+| DGC_TRUSTANCHOR_KEYSTOREPATH                  |                                                                                                 |                                                                  |    
+| DGC_TRUSTANCHOR_KEYSTOREPASS                  |                                                                                                 |                                                                  |    
+| DGC_TRUSTANCHOR_CERTIFICATEALIAS              |                                                                                                 |                                                                  |    
+| DGC_UPLOADCERTS_VALIDITY                      |                                                                                                 |                                                                  |    
+| DGC_UPLOADCERTS_COMMONNAME                    |                                                                                                 |                                                                  |
+| DGC_IGNORECOUNTRIES                           | Comma-seperated list of Countries which shall be ignored by the tool                            | DE,FR                                                            |
 
 # Run
 
