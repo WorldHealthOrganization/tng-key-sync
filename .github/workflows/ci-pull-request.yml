@@ -1,0 +1,34 @@
+name: PullRequest CI
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+permissions:
+  contents: 'read'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      - name: Build Artifact
+        run: >-
+          mvn clean verify --batch-mode
+          --file ./pom.xml
+          --define app.packages.username="${APP_PACKAGES_USERNAME}"
+          --define app.packages.password="${APP_PACKAGES_PASSWORD}"
+          --settings ./settings.xml
+        env:
+          APP_PACKAGES_USERNAME: ${{ github.actor }}
+          APP_PACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}

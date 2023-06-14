@@ -1,0 +1,68 @@
+name: Main Branch CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      - name: Extract Version
+        run: >-
+          APP_SHA=$(git rev-parse --short ${GITHUB_SHA});
+          APP_REV=$(git rev-list --tags --max-count=1);
+          APP_TAG=$(git describe --tags ${APP_REV} 2> /dev/null || echo 0.0.0);
+          echo "APP_VERSION=${APP_TAG}-${APP_SHA}" >> ${GITHUB_ENV};
+      - name: Set Maven Version
+        run: >-
+          mvn versions:set --batch-mode
+          --file ./pom.xml
+          --define newVersion="${APP_VERSION}"
+          --define app.packages.username="${APP_PACKAGES_USERNAME}"
+          --define app.packages.password="${APP_PACKAGES_PASSWORD}"
+          --settings ./settings.xml;
+        env:
+          APP_PACKAGES_USERNAME: ${{ github.actor }}
+          APP_PACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Artifact
+        run: >-
+          mvn clean install --batch-mode
+          --file ./pom.xml
+          --define app.packages.username="${APP_PACKAGES_USERNAME}"
+          --define app.packages.password="${APP_PACKAGES_PASSWORD}"
+          --settings ./settings.xml;
+        env:
+          APP_PACKAGES_USERNAME: ${{ github.actor }}
+          APP_PACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract JAR Layers
+        run: mkdir ./target/extracted && java -Djarmode=layertools -jar ./target/*.jar extract --destination ./target/extracted
+      - name: Docker Build and Push
+        run: >-
+          echo "${APP_PACKAGES_PASSWORD}" | docker login "${APP_PACKAGES_URL}"
+          --username "${APP_PACKAGES_USERNAME}"
+          --password-stdin;
+          docker build .
+          --file ./Dockerfile
+          --tag "${APP_PACKAGES_URL}:latest"
+          --tag "${APP_PACKAGES_URL}:${APP_VERSION}";
+          docker push "${APP_PACKAGES_URL}:latest";
+          docker push "${APP_PACKAGES_URL}:${APP_VERSION}";
+        env:
+          APP_PACKAGES_URL: ghcr.io/worldhealthorganization/tng-key-sync
+          APP_PACKAGES_USERNAME: ${{ github.actor }}
+          APP_PACKAGES_PASSWORD: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    jndi-name: false
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:dgc;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+    username: sa
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: update
+dcc:
+  publication:
+    url: https://ec.europa.eu/assets/eu-dcc
+    proxy:
+      host: sia-lb.telekom.de
+      port: 8080
+    allowed-signing-cert-thumbprints:
+      - 84b0309cb751d0660f48d96b7aff5ce950e741916b40264bc7d7c31d875e063b
+  trustAnchor:
+    keyStorePath: test_ta.p12
+    keyStorePass: felix
+    certificateAlias: felix_dev_ta
+  uploadCerts:
+    validity: 365
+    commonName: TNG Key Import Upload
