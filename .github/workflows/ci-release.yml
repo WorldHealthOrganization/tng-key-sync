@@ -1,12 +1,10 @@
-name: Main Branch CI
+name: Release CI
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+  release:
+    types:
+      - created
 permissions:
-  contents: read
-  packages: write
+  contents: 'read'
 
 jobs:
   build_and_push:
@@ -24,10 +22,9 @@ jobs:
           cache: 'maven'
       - name: Extract Version
         run: >-
-          APP_SHA=$(git rev-parse --short ${GITHUB_SHA});
           APP_REV=$(git rev-list --tags --max-count=1);
           APP_TAG=$(git describe --tags ${APP_REV} 2> /dev/null || echo 0.0.0);
-          echo "APP_VERSION=${APP_TAG}-${APP_SHA}" >> ${GITHUB_ENV};
+          echo "APP_VERSION=${APP_TAG}" >> ${GITHUB_ENV};
       - name: Set Maven Version
         run: >-
           mvn versions:set --batch-mode
@@ -58,7 +55,9 @@ jobs:
           --password-stdin;
           docker build .
           --file ./Dockerfile
+          --tag "${APP_PACKAGES_URL}:latest"
           --tag "${APP_PACKAGES_URL}:${APP_VERSION}";
+          docker push "${APP_PACKAGES_URL}:latest";
           docker push "${APP_PACKAGES_URL}:${APP_VERSION}";
         env:
           APP_PACKAGES_URL: ghcr.io/worldhealthorganization/tng-key-sync
