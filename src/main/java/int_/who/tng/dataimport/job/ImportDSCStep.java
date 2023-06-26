@@ -197,9 +197,8 @@ public class ImportDSCStep {
     }
 
     private boolean doesNotAlreadyExists(ParseCertificatesStep.ArchiveCertificateEntry certificateEntry) {
-        if (trustedPartyRepository.getFirstByThumbprintAndCertificateType(
-            certificateEntry.thumbprint(), TrustedPartyEntity.CertificateType.CSCA).isPresent()) {
-            log.info("CSCA with thumbprint {} for country {} already exists",
+        if (signerInformationRepository.getFirstByThumbprint(certificateEntry.thumbprint()).isPresent()) {
+            log.info("DSC with thumbprint {} for country {} already exists",
                 certificateEntry.thumbprint(), certificateEntry.country());
 
             return false;
