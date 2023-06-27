@@ -26,7 +26,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TrustedPartyRepository extends JpaRepository<TrustedPartyEntity, Long> {
 
-    Optional<TrustedPartyEntity> getFirstByThumbprintAndCertificateType(
-        String thumbprint, TrustedPartyEntity.CertificateType type);
+    Optional<TrustedPartyEntity> getFirstByThumbprint(String thumbprint);
 
 }

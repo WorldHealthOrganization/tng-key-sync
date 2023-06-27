@@ -1,6 +1,8 @@
 package int_.who.tng.dataimport.job;
 
-import java.util.List;
+import int_.who.tng.dataimport.config.DccConfigProperties;
+import java.util.Arrays;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,30 +14,30 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ImportJobOrchestrator {
 
-    private final DownloadArchiveStep downloadArchiveStep;
+    private final Map<String, ImportJobStep> importJobSteps;
 
-    private final ExtractArchiveStep extractArchiveStep;
-
-    private final ParseCertificatesStep parseCertificatesStep;
-
-    private final ImportCSCAStep importCSCAStep;
-
-    private final ImportDSCStep importDSCStep;
-
-    private final RemoveIgnoredCountriesStep removeIgnoredCountriesStep;
+    private final DccConfigProperties dccConfigProperties;
 
     @EventListener(ApplicationReadyEvent.class)
     public void exec() {
         log.info("Starting DCC Key Import Job");
 
-        byte[] archive = downloadArchiveStep.exec();
-        List<ExtractArchiveStep.ArchivePemEntry> pemEntries = extractArchiveStep.exec(archive);
-        List<ExtractArchiveStep.ArchivePemEntry> filteredPemEntries = removeIgnoredCountriesStep.exec(pemEntries);
-        List<ParseCertificatesStep.ArchiveCertificateEntry> certificateEntries = parseCertificatesStep.exec(filteredPemEntries);
-        importCSCAStep.exec(certificateEntries);
-        importDSCStep.exec(certificateEntries);
+        ImportJobContext context = new ImportJobContext();
+
+        dccConfigProperties.getImportJobSteps().forEach((step) -> {
+            ImportJobStep importJobStepImpl = importJobSteps.get(step.getName().toString());
+
+            if (importJobStepImpl == null) {
+                log.error("Could not find implementation for {}", step.getName());
+                System.exit(1);
+            }
+
+            log.info("Executing {} for {} with {} args", importJobStepImpl.getClass().getName(),
+                step.getName(), step.getArgs().length);
+            log.debug("Args: {}", Arrays.asList(step.getArgs()));
+            importJobStepImpl.exec(context, step.getArgs());
+        });
 
         log.info("Finished DCC Key Import Job");
     }
-
 }

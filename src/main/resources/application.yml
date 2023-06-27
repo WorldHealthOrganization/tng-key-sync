@@ -8,14 +8,93 @@ spring:
     hibernate:
       ddl-auto: none
 dgc:
-  publication:
-    url: https://ec.europa.eu/assets/eu-dcc
-    allowed-signing-cert-thumbprints: []
+  # TODO: Remove Proxy Config
+  proxy:
+    host: sia-lb.telekom.de
+    port: 8080
   trustAnchor:
     keyStorePath: x
     keyStorePass: x
     certificateAlias: x
-  uploadCerts:
-    validity: 365
-    commonName: TNG Key Import Upload
-  ignoreCountries: []
+  import-job-steps:
+    ## EU DCC TrustList
+    - name: DownloadFile
+      args:
+        - https://ec.europa.eu/assets/eu-dcc/dcc_trustlist.zip
+        - dcc_trustlist.zip
+    - name: DownloadFile
+      args:
+        - https://ec.europa.eu/assets/eu-dcc/dcc_trustlist.zip.sig.txt
+        - dcc_trustlist.zip.sig.txt
+    - name: VerifyFileSignature
+      args:
+        - dcc_trustlist.zip
+        - dcc_trustlist.zip.sig.txt
+        - 84b0309cb751d0660f48d96b7aff5ce950e741916b40264bc7d7c31d875e063b
+    - name: ExtractZip
+      args:
+        - dcc_trustlist.zip
+        - dcc_trustlist
+    - name: ParseCertificates
+      args:
+        - ^dcc_trustlist/DSC/DCC/../[0-9a-f]{64}\.pem$
+        - DSC
+        - PEM
+
+
+    ## WHO Trustlist
+    - name: DownloadFile
+      args:
+        - https://github.com/WorldHealthOrganization/tng-participants-uat/archive/refs/heads/FIN/onboardingRequest.zip
+        - who_trustlist.zip
+    - name: ExtractZip
+      args:
+        - who_trustlist.zip
+        - who_trustlist
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/TLS/signed/.+\.json$
+        - AUTHENTICATION
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/SCA/signed/.+\.json$
+        - CSCA
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/UP/signed/.+\.json$
+        - UPLOAD
+        - JSON
+
+
+    ## Process parsed Data
+    - name: RemoveIgnoredCountries
+      args:
+        - ZZ
+
+    - name: RemoveExistingCertificates
+      args:
+        - DSC
+    - name: RemoveExistingCertificates
+      args:
+        - CSCA
+    - name: RemoveExistingCertificates
+      args:
+        - UPLOAD
+    - name: RemoveExistingCertificates
+      args:
+        - AUTHENTICATION
+
+    - name: SaveCertificatesInDb
+      args:
+        - DSC
+    - name: SaveCertificatesInDb
+      args:
+        - CSCA
+    - name: SaveCertificatesInDb
+      args:
+        - UPLOAD
+    - name: SaveCertificatesInDb
+      args:
+        - AUTHENTICATION
