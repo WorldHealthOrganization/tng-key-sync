@@ -60,7 +60,8 @@ public class DccConfigProperties {
             ParseCertificates,
             RemoveIgnoredCountries,
             RemoveExistingCertificates,
-            SaveCertificatesInDb
+            SaveCertificatesInDb,
+            MapPrivateKey
         }
     }
 

@@ -98,3 +98,11 @@ dgc:
     - name: SaveCertificatesInDb
       args:
         - AUTHENTICATION
+
+    - name: MapPrivateKey
+      args:
+        - UPLOAD      # CertificateType
+        - ks.p12      # KeyStore Path
+        - s3cr3t      # KeyStore Password
+        - upload_key  # Key Alias
+        - s3cret      # Key Password

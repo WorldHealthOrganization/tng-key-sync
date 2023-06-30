@@ -86,6 +86,7 @@ public class ParseCertificatesStep implements ImportJobStep {
 
                 return new ImportJobContext.CertificateEntry(
                     x509CertificateHolder,
+                    x509Certificate,
                     null,
                     x509Certificate.getEncoded(),
                     certificateUtils.getCertThumbprint(x509Certificate),
@@ -119,8 +120,11 @@ public class ParseCertificatesStep implements ImportJobStep {
 
             String countryCode = IETFUtils.valueToString(countryRdns[0].getFirst().getValue());
 
+            X509Certificate x509Certificate = certificateUtils.convertCertificate(x509CertificateHolder);
+
             return new ImportJobContext.CertificateEntry(
                 x509CertificateHolder,
+                x509Certificate,
                 null,
                 x509CertificateHolder.getEncoded(),
                 certificateUtils.getCertThumbprint(x509CertificateHolder),
@@ -128,7 +132,7 @@ public class ParseCertificatesStep implements ImportJobStep {
                 countryCode,
                 certificateType);
 
-        } catch (IOException e) {
+        } catch (IOException | CertificateException e) {
             log.error("Unable to Parse Certificate.", e);
             System.exit(1);
             return null;

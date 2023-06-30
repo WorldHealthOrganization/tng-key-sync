@@ -1,6 +1,7 @@
 package int_.who.tng.dataimport.job;
 
 import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,9 @@ public class ImportJobContext {
     @Getter
     @Setter
     public static class CertificateEntry {
-        private X509CertificateHolder parsedCertificate;
+        private X509CertificateHolder parsedCertificateHolder;
+
+        private X509Certificate parsedCertificate;
 
         private PrivateKey privateKey;
 
