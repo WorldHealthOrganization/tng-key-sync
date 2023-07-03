@@ -42,7 +42,7 @@ dgc:
         - PEM
 
 
-    ## WHO Trustlist
+    # WHO Trustlist
     - name: DownloadFile
       args:
         - https://github.com/WorldHealthOrganization/tng-participants-uat/archive/refs/heads/FIN/onboardingRequest.zip
@@ -68,41 +68,48 @@ dgc:
         - JSON
 
 
-    ## Process parsed Data
-    - name: RemoveIgnoredCountries
-      args:
-        - ZZ
-
-    - name: RemoveExistingCertificates
-      args:
-        - DSC
-    - name: RemoveExistingCertificates
-      args:
-        - CSCA
-    - name: RemoveExistingCertificates
-      args:
-        - UPLOAD
-    - name: RemoveExistingCertificates
-      args:
-        - AUTHENTICATION
-
-    - name: SaveCertificatesInDb
-      args:
-        - DSC
-    - name: SaveCertificatesInDb
-      args:
-        - CSCA
-    - name: SaveCertificatesInDb
-      args:
-        - UPLOAD
-    - name: SaveCertificatesInDb
-      args:
-        - AUTHENTICATION
-
+    ## Sign DSC with Upload Certificates
     - name: MapPrivateKey
       args:
         - UPLOAD      # CertificateType
         - ks.p12      # KeyStore Path
         - s3cr3t      # KeyStore Password
         - upload_key  # Key Alias
-        - s3cret      # Key Password
+        - s3cr3t      # Key Password
+
+    - name: SignCertificates
+      args:
+        - UPLOAD
+        - DSC
+
+
+    ## Persistence (Filter unwanted and already existing Data and persist new entries)
+    - name: RemoveIgnoredCountries
+      args:
+        - ZZ
+
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - DSC
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - CSCA
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - UPLOAD
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - AUTHENTICATION
+
+    - name: SaveCertificatesInDb
+      args:
+        - DSC
+    - name: SaveCertificatesInDb
+      args:
+        - CSCA
+    - name: SaveCertificatesInDb
+      args:
+        - UPLOAD
+    - name: SaveCertificatesInDb
+      args:
+        - AUTHENTICATION

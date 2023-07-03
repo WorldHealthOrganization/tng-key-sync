@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Service("RemoveExistingCertificates")
+@Service("RemoveExistingCertificatesFromContext")
 @RequiredArgsConstructor
 @Slf4j
-public class RemoveExistingCertificatesStep implements ImportJobStep {
+public class RemoveExistingCertificatesFromContextStep implements ImportJobStep {
 
     private final SignerInformationRepository signerInformationRepository;
 

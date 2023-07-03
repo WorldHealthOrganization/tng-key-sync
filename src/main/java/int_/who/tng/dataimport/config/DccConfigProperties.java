@@ -59,9 +59,11 @@ public class DccConfigProperties {
             ExtractZip,
             ParseCertificates,
             RemoveIgnoredCountries,
-            RemoveExistingCertificates,
+            RemoveExistingCertificatesFromContext,
             SaveCertificatesInDb,
-            MapPrivateKey
+            MapPrivateKey,
+            AddCertificate,
+            SignCertificates
         }
     }
 

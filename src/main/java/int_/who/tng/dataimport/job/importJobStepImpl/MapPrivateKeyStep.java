@@ -63,6 +63,7 @@ public class MapPrivateKeyStep implements ImportJobStep {
                         PublicKey publicKey = certificateEntry.getParsedCertificate().getPublicKey();
                         Signature verifier = Signature.getInstance(signatureAlgorithm);
                         verifier.initVerify(publicKey);
+                        verifier.update(dummyData);
                         return verifier.verify(signature);
                     } catch (NoSuchAlgorithmException e) {
                         log.error("Failed to initialize Signature Verifier", e);
