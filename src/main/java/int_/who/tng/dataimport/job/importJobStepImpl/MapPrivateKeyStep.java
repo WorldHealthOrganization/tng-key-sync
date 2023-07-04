@@ -2,6 +2,7 @@ package int_.who.tng.dataimport.job.importJobStepImpl;
 
 import int_.who.tng.dataimport.job.ImportJobContext;
 import int_.who.tng.dataimport.job.ImportJobStep;
+import int_.who.tng.dataimport.job.ImportJobStepException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,14 +28,14 @@ import org.springframework.stereotype.Service;
 public class MapPrivateKeyStep implements ImportJobStep {
 
     @Override
-    public void exec(ImportJobContext context, String... args) {
+    public void exec(ImportJobContext context, String... args) throws ImportJobStepException {
         ImportJobContext.CertificateType certificateType = ImportJobContext.CertificateType.valueOf(args[0]);
         String keyStorePath = args[1];
         String keyStorePassword = args[2];
         String keyStoreKeyAlias = args[3];
         String keyStoreKeyPassword = args[4];
 
-        log.info("Trying to map given PrivateKey to parsed Certificates");
+        log.debug("Trying to map given PrivateKey to parsed Certificates");
 
         try {
             KeyStore keyStore = KeyStore.getInstance("JKS");
@@ -42,7 +43,7 @@ public class MapPrivateKeyStep implements ImportJobStep {
             final PrivateKey privateKey =
                 (PrivateKey) keyStore.getKey(keyStoreKeyAlias, keyStoreKeyPassword.toCharArray());
 
-            log.info("Generating Random Signature with PrivateKey");
+            log.debug("Generating Random Signature with PrivateKey");
             String signatureAlgorithm = privateKey instanceof RSAPrivateKey ? "NoneWithRSA" : "NoneWithECDSA";
 
             byte[] dummyData = new byte[32];
@@ -54,6 +55,7 @@ public class MapPrivateKeyStep implements ImportJobStep {
             signer.update(dummyData);
             final byte[] signature = signer.sign();
 
+            Signature verifier = Signature.getInstance(signatureAlgorithm);
 
             context.getParsedCertificates().stream()
                 .filter(certificateEntry -> certificateEntry.getCertificateType() == certificateType)
@@ -61,39 +63,28 @@ public class MapPrivateKeyStep implements ImportJobStep {
                     // Check if Signed Data can be verified by PublicKey of Certificate
                     try {
                         PublicKey publicKey = certificateEntry.getParsedCertificate().getPublicKey();
-                        Signature verifier = Signature.getInstance(signatureAlgorithm);
                         verifier.initVerify(publicKey);
                         verifier.update(dummyData);
                         return verifier.verify(signature);
-                    } catch (NoSuchAlgorithmException e) {
-                        log.error("Failed to initialize Signature Verifier", e);
-                        System.exit(1);
-                        return false;
                     } catch (InvalidKeyException | SignatureException e) {
                         return false;
                     }
                 })
                 .forEach(certificateEntry -> certificateEntry.setPrivateKey(privateKey));
         } catch (NoSuchAlgorithmException | SignatureException e) {
-            log.error("Failed to create Dummy Signature.", e);
-            System.exit(1);
+            throw new ImportJobStepException(true, "Failed to create initialize Verifier/Signer: " + e.getMessage());
         } catch (KeyStoreException | UnrecoverableKeyException e) {
-            log.error("Failed to load PrivateKey from KeyStore.", e);
-            System.exit(1);
+            throw new ImportJobStepException(true, "Failed to load PrivateKey from KeyStore: " + e.getMessage());
         } catch (Exception e) {
-            log.error("Failed to load KeyStore: {}", keyStorePath, e);
-            System.exit(1);
+            throw new ImportJobStepException(true, "Failed to load KeyStore " + keyStorePath + ": " + e.getMessage());
         }
 
-        log.info("Finished mapping PrivateKey to parsed Certificates");
+        log.debug("Finished mapping PrivateKey to parsed Certificates");
     }
 
     private void loadKeyStore(KeyStore keyStore, String path, char[] password) throws Exception {
         try (InputStream fileStream = getStream(path)) {
             keyStore.load(fileStream, password);
-        } catch (Exception e) {
-            log.error("Could not load Keystore {}", path);
-            throw e;
         }
     }
 

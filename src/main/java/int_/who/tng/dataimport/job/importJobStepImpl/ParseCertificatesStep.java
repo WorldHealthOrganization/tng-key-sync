@@ -1,9 +1,11 @@
 package int_.who.tng.dataimport.job.importJobStepImpl;
 
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.dgc.utils.CertificateUtils;
 import int_.who.tng.dataimport.job.ImportJobContext;
 import int_.who.tng.dataimport.job.ImportJobStep;
+import int_.who.tng.dataimport.job.ImportJobStepException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.cert.Certificate;
@@ -36,12 +38,12 @@ public class ParseCertificatesStep implements ImportJobStep {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void exec(ImportJobContext context, String... args) {
+    public void exec(ImportJobContext context, String... args) throws ImportJobStepException {
         Pattern fileNamePattern = Pattern.compile(args[0]);
         ImportJobContext.CertificateType certificateType = ImportJobContext.CertificateType.valueOf(args[1]);
         String format = args[2];
 
-        log.info("Parsing Files matching {} as Certificates of type {}", fileNamePattern, certificateType);
+        log.debug("Parsing Files matching {} as Certificates of type {}", fileNamePattern, certificateType);
 
         List<ImportJobContext.CertificateEntry> parsedCerts = context.getFiles().entrySet().stream()
             .filter(entry -> fileNamePattern.matcher(entry.getKey()).matches())
@@ -52,20 +54,18 @@ public class ParseCertificatesStep implements ImportJobStep {
                 } else if (format.equalsIgnoreCase("PEM")) {
                     return parsePem(file, certificateType);
                 } else {
-                    log.error("{} is not a known format for certificate files.", format);
-                    System.exit(1);
-                    return null;
+                    throw new ImportJobStepException(true, format + " is not a known format for certificate files");
                 }
             })
-            .filter(Objects::nonNull)
             .toList();
 
         context.getParsedCertificates().addAll(parsedCerts);
 
-        log.info("Finished parsing {} File into Certificate Objects.", parsedCerts.size());
+        log.debug("Finished parsing {} File into Certificate Objects.", parsedCerts.size());
     }
 
-    private ImportJobContext.CertificateEntry parsePem(byte[] file, ImportJobContext.CertificateType certificateType) {
+    private ImportJobContext.CertificateEntry parsePem(byte[] file, ImportJobContext.CertificateType certificateType)
+        throws ImportJobStepException {
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X509");
 
@@ -77,9 +77,8 @@ public class ParseCertificatesStep implements ImportJobStep {
                 RDN[] countryRdns = x509CertificateHolder.getSubject().getRDNs(BCStyle.C);
 
                 if (countryRdns.length != 1) {
-                    log.error("No Country Attribute in Cert with Subject {}. Skipping File",
+                    throw new ImportJobStepException(true, "No Country Attribute in Cert with Subject " +
                         x509CertificateHolder.getSubject());
-                    return null;
                 }
 
                 String countryCode = IETFUtils.valueToString(countryRdns[0].getFirst().getValue());
@@ -94,17 +93,15 @@ public class ParseCertificatesStep implements ImportJobStep {
                     countryCode,
                     certificateType);
             } else {
-                log.error("Failed to parse File as X509Certificate. Skipping File");
-                return null;
+                throw new ImportJobStepException(true, "Failed to parse Certificate as X509Certificate");
             }
         } catch (CertificateException | IOException e) {
-            log.error("Unable to initialize PEM Parser.", e);
-            System.exit(1);
-            return null;
+            throw new ImportJobStepException(true, "Unable to initialize PEM Parser: " + e.getMessage());
         }
     }
 
-    private ImportJobContext.CertificateEntry parseJson(byte[] file, ImportJobContext.CertificateType certificateType) {
+    private ImportJobContext.CertificateEntry parseJson(byte[] file, ImportJobContext.CertificateType certificateType)
+        throws ImportJobStepException {
         try {
             JsonStructure json = objectMapper.readValue(file, JsonStructure.class);
 
@@ -113,9 +110,8 @@ public class ParseCertificatesStep implements ImportJobStep {
             RDN[] countryRdns = x509CertificateHolder.getSubject().getRDNs(BCStyle.C);
 
             if (countryRdns.length != 1) {
-                log.error("No Country Attribute in Cert with Subject {}. Skipping File",
+                throw new ImportJobStepException(true, "No Country Attribute in Cert with Subject " +
                     x509CertificateHolder.getSubject());
-                return null;
             }
 
             String countryCode = IETFUtils.valueToString(countryRdns[0].getFirst().getValue());
@@ -132,10 +128,10 @@ public class ParseCertificatesStep implements ImportJobStep {
                 countryCode,
                 certificateType);
 
+        } catch (DatabindException e) {
+            throw new ImportJobStepException(true, "Failed to parse JSON: " + e.getMessage());
         } catch (IOException | CertificateException e) {
-            log.error("Unable to Parse Certificate.", e);
-            System.exit(1);
-            return null;
+            throw new ImportJobStepException(true, "Failed to parse Certificate: " + e.getMessage());
         }
     }
 

@@ -51,6 +51,18 @@ public class ImportJobOrchestrator {
                     log.error("Execution will be canceled because of critical error.");
                     System.exit(1);
                 }
+            } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+                log.error(
+                    "{} occurred at step {} with args {}: Please check the arguments passed to the import step.",
+                    e.getClass().getSimpleName(), step.getName(), step.getArgs());
+                log.error("Execution will be canceled because of critical error.");
+                System.exit(1);
+            } catch (Exception e) {
+                log.error(
+                    "Unexpected Exception of type {} occurred at step {} with args {}. See Stacktrace for details.",
+                    e.getClass().getSimpleName(), step.getName(), step.getArgs(), e);
+                log.error("Execution will be canceled because of critical error.");
+                System.exit(1);
             }
         });
 

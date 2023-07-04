@@ -17,14 +17,14 @@ public class RemoveIgnoredCountriesStep implements ImportJobStep {
     public void exec(ImportJobContext context, String... args) {
         List<String> ignoredCountries = Arrays.asList(args);
 
-        log.info("Removing Certificates of ignored countries: {}", ignoredCountries);
+        log.debug("Removing Certificates of ignored countries: {}", ignoredCountries);
 
         int preProcessSize = context.getParsedCertificates().size();
 
         context.getParsedCertificates()
             .removeIf(certificateEntry -> ignoredCountries.contains(certificateEntry.getCountry()));
 
-        log.info("Finished filtering Certificates for ignored countries. {} of {} entries were removed.",
+        log.debug("Finished filtering Certificates for ignored countries. {} of {} entries were removed.",
             preProcessSize - context.getParsedCertificates().size(), preProcessSize);
     }
 }

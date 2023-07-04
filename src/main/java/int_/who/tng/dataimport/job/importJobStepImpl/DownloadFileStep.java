@@ -2,6 +2,7 @@ package int_.who.tng.dataimport.job.importJobStepImpl;
 
 import int_.who.tng.dataimport.job.ImportJobContext;
 import int_.who.tng.dataimport.job.ImportJobStep;
+import int_.who.tng.dataimport.job.ImportJobStepException;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,22 +19,27 @@ public class DownloadFileStep implements ImportJobStep {
     private final CloseableHttpClient httpClient;
 
     @Override
-    public void exec(ImportJobContext context, String... args) {
+    public void exec(ImportJobContext context, String... args) throws ImportJobStepException {
         final String downloadUri = args[0];
         final String targetFileName = args[1];
 
-        log.info("Downloading File from {} as {}", downloadUri, targetFileName);
+        log.debug("Downloading File from {} as {}", downloadUri, targetFileName);
 
         try {
             CloseableHttpResponse response = httpClient.execute(RequestBuilder.get(downloadUri).build());
-            byte[] downloadedFile = response.getEntity().getContent().readAllBytes();
 
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new ImportJobStepException(true, "Download from " + downloadUri + " failed with HTTP Status " +
+                    response.getStatusLine().getStatusCode());
+            }
+
+            byte[] downloadedFile = response.getEntity().getContent().readAllBytes();
             context.getFiles().put(targetFileName, downloadedFile);
-            log.info("Downloaded File from {} as {} with {} bytes.", downloadUri, targetFileName,
+
+            log.debug("Downloaded File from {} as {} with {} bytes.", downloadUri, targetFileName,
                 downloadedFile.length);
         } catch (IOException e) {
-            log.error("Download from {} failed.", downloadUri, e);
-            System.exit(1);
+            throw new ImportJobStepException(true, "Download from " + downloadUri + " failed: " + e.getMessage());
         }
     }
 }

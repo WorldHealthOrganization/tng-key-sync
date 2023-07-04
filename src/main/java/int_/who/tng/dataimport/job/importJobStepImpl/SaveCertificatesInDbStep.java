@@ -24,7 +24,7 @@ public class SaveCertificatesInDbStep implements ImportJobStep {
     public void exec(ImportJobContext context, String... args) {
         ImportJobContext.CertificateType certificateType = ImportJobContext.CertificateType.valueOf(args[0]);
 
-        log.info("Persisting {} Certificates in Database", certificateType);
+        log.debug("Persisting {} Certificates in Database", certificateType);
 
         context.getParsedCertificates().stream()
             .filter(certificate -> certificate.getCertificateType() == certificateType)
@@ -36,13 +36,13 @@ public class SaveCertificatesInDbStep implements ImportJobStep {
 
     private boolean checkCertificateEntry(ImportJobContext.CertificateEntry certificateEntry) {
         if (certificateEntry.getSignature() == null) {
-            log.error("Certificate with thumbprint {} has no signature. Skipping Certificate.",
+            log.warn("Certificate with thumbprint {} has no signature. Skipping Certificate.",
                 certificateEntry.getThumbprint());
             return false;
         }
 
         if (certificateEntry.getCountry() == null) {
-            log.error("Certificate with thumbprint {} has no valid country code. Skipping Certificate.",
+            log.warn("Certificate with thumbprint {} has no valid country code. Skipping Certificate.",
                 certificateEntry.getThumbprint());
             return false;
         }
@@ -61,7 +61,7 @@ public class SaveCertificatesInDbStep implements ImportJobStep {
 
         trustedPartyRepository.save(trustedPartyEntity);
 
-        log.info("Inserted TrustedParty with thumbprint {} for country {}",
+        log.debug("Inserted TrustedParty with thumbprint {} for country {}",
             certificateEntry.getThumbprint(), certificateEntry.getCountry());
     }
 
@@ -76,7 +76,7 @@ public class SaveCertificatesInDbStep implements ImportJobStep {
 
         signerInformationRepository.save(signerInformationEntity);
 
-        log.info("Inserted SignerInformation with thumbprint {} for country {}",
+        log.debug("Inserted SignerInformation with thumbprint {} for country {}",
             certificateEntry.getThumbprint(), certificateEntry.getCountry());
     }
 }

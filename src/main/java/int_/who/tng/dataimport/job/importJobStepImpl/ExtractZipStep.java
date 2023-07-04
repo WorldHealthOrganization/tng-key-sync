@@ -2,6 +2,7 @@ package int_.who.tng.dataimport.job.importJobStepImpl;
 
 import int_.who.tng.dataimport.job.ImportJobContext;
 import int_.who.tng.dataimport.job.ImportJobStep;
+import int_.who.tng.dataimport.job.ImportJobStepException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
@@ -16,11 +17,11 @@ import org.springframework.stereotype.Service;
 public class ExtractZipStep implements ImportJobStep {
 
     @Override
-    public void exec(ImportJobContext context, String... args) {
+    public void exec(ImportJobContext context, String... args) throws ImportJobStepException {
         String archiveFileName = args[0];
         String extractPrefix = args[1];
 
-        log.info("Extracting ZIP Archive {}", archiveFileName);
+        log.debug("Extracting ZIP Archive {}", archiveFileName);
         try {
             ZipInputStream zipInputStream = new ZipInputStream(
                 new ByteArrayInputStream(
@@ -36,8 +37,7 @@ public class ExtractZipStep implements ImportJobStep {
                 context.getFiles().put(extractPrefix + "/" + filename, zipInputStream.readAllBytes());
             }
         } catch (IOException e) {
-            log.error("Extraction of ZIP Archive failed.", e);
-            System.exit(1);
+            throw new ImportJobStepException(true, "Extraction of ZIP Archive failed: " + e.getMessage());
         }
     }
 }

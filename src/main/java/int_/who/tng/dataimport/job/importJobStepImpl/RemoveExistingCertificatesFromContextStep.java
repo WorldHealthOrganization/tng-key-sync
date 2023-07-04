@@ -21,7 +21,7 @@ public class RemoveExistingCertificatesFromContextStep implements ImportJobStep 
     public void exec(ImportJobContext context, String... args) {
         ImportJobContext.CertificateType certificateType = ImportJobContext.CertificateType.valueOf(args[0]);
 
-        log.info("Removing Existing Certificates of type {}", certificateType);
+        log.debug("Removing Existing Certificates of type {}", certificateType);
 
         int preProcessSize = context.getParsedCertificates().size();
 
@@ -36,7 +36,7 @@ public class RemoveExistingCertificatesFromContextStep implements ImportJobStep 
                         .isPresent());
         }
 
-        log.info("Finished filtering for existing Certificates. {} of {} entries were removed.",
+        log.debug("Finished filtering for existing Certificates. {} of {} entries were removed.",
             preProcessSize - context.getParsedCertificates().size(), preProcessSize);
     }
 }

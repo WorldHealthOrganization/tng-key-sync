@@ -20,7 +20,7 @@ public class SignCertificatesStep implements ImportJobStep {
         final ImportJobContext.CertificateType signerCertType = ImportJobContext.CertificateType.valueOf(args[0]);
         final ImportJobContext.CertificateType toBeSignedCertType = ImportJobContext.CertificateType.valueOf(args[1]);
 
-        log.info("Signing Certificates of Type {} with Certificates of Type {}", toBeSignedCertType, signerCertType);
+        log.debug("Signing Certificates of Type {} with Certificates of Type {}", toBeSignedCertType, signerCertType);
 
         // Find Certificates with matching Type and without Signature
         List<ImportJobContext.CertificateEntry> toBesignedCertificates = context.getParsedCertificates().stream()
@@ -43,7 +43,7 @@ public class SignCertificatesStep implements ImportJobStep {
                 signingCertificates.get(toBesignedCertificate.getCountry());
 
             if (signerCertificate == null) {
-                log.info("No Signer Certificate for Country {}", toBesignedCertificate.getCountry());
+                log.warn("No Signer Certificate for Country {}", toBesignedCertificate.getCountry());
                 continue;
             }
 
@@ -54,14 +54,14 @@ public class SignCertificatesStep implements ImportJobStep {
                 .buildAsString(true);
 
             toBesignedCertificate.setSignature(signature);
-            log.info("Signed Certificate. ToBeSigned: {} {} - {}, Signer: {} {} - {}",
+            log.debug("Signed Certificate. ToBeSigned: {} {} - {}, Signer: {} {} - {}",
                 toBesignedCertificate.getCertificateType(), toBesignedCertificate.getCountry(),
                 toBesignedCertificate.getThumbprint(),
                 signerCertificate.getCertificateType(), signerCertificate.getCountry(),
                 toBesignedCertificate.getThumbprint());
         }
 
-        log.info("Finished signing Certificates of Type {} with Certificates of Type {}", toBeSignedCertType,
+        log.debug("Finished signing Certificates of Type {} with Certificates of Type {}", toBeSignedCertType,
             signerCertType);
     }
 }
