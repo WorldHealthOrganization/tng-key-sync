@@ -35,7 +35,23 @@ public class ImportJobOrchestrator {
             log.info("Executing {} for {} with {} args", importJobStepImpl.getClass().getName(),
                 step.getName(), step.getArgs().length);
             log.debug("Args: {}", Arrays.asList(step.getArgs()));
-            importJobStepImpl.exec(context, step.getArgs());
+
+            try {
+                importJobStepImpl.exec(context, step.getArgs());
+            } catch (ImportJobStepException e) {
+                if (e.isCritical()) {
+                    log.error("CRITICAL ERROR occurred during execution of step {} with args {}: {}",
+                        step.getName(), step.getArgs(), e.getMessage());
+                } else {
+                    log.error("Error occurred during execution of step {} with args {}: {}",
+                        step.getName(), step.getArgs(), e.getMessage());
+                }
+
+                if (e.isCritical() && step.isFailOnCriticalException()) {
+                    log.error("Execution will be canceled because of critical error.");
+                    System.exit(1);
+                }
+            }
         });
 
         log.info("Finished DCC Key Import Job");

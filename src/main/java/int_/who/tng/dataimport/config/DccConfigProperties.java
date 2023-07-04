@@ -53,6 +53,11 @@ public class DccConfigProperties {
          */
         private String[] args = new String[0];
 
+        /**
+         * [optional] Specify whether the whole process should fail on critical exception. (default: true)
+         */
+        private boolean failOnCriticalException = true;
+
         public enum ImportJobStepNames {
             DownloadFile,
             VerifyFileSignature,

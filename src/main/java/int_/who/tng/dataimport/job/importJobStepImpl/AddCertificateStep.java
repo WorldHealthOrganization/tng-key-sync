@@ -3,6 +3,7 @@ package int_.who.tng.dataimport.job.importJobStepImpl;
 import eu.europa.ec.dgc.utils.CertificateUtils;
 import int_.who.tng.dataimport.job.ImportJobContext;
 import int_.who.tng.dataimport.job.ImportJobStep;
+import int_.who.tng.dataimport.job.ImportJobStepException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
@@ -21,27 +22,27 @@ public class AddCertificateStep implements ImportJobStep {
     private final CertificateUtils certificateUtils;
 
     @Override
-    public void exec(ImportJobContext context, String... args) {
+    public void exec(ImportJobContext context, String... args) throws ImportJobStepException {
         String base64EncodedCert = args[0];
         ImportJobContext.CertificateType certificateType = ImportJobContext.CertificateType.valueOf(args[1]);
 
-        log.info("Adding Certificate to Context");
-
         try {
-
             X509CertificateHolder x509CertificateHolder =
                 new X509CertificateHolder(Base64.getDecoder().decode(base64EncodedCert));
             RDN[] countryRdns = x509CertificateHolder.getSubject().getRDNs(BCStyle.C);
 
             if (countryRdns.length != 1) {
-                log.error("No Country Attribute in Cert with Subject {}. Skipping Certificate",
-                    x509CertificateHolder.getSubject());
-                return;
+                throw new ImportJobStepException(false,
+                    "No Country Attribute in Cert with Subject " + x509CertificateHolder.getSubject() +
+                        ". Skipping Certificate");
             }
 
             String countryCode = IETFUtils.valueToString(countryRdns[0].getFirst().getValue());
 
             X509Certificate x509Certificate = certificateUtils.convertCertificate(x509CertificateHolder);
+
+            log.debug("Adding Certificate ({}, {}) to Context.", x509Certificate.getSubjectX500Principal().toString(),
+                certificateType);
 
             context.getParsedCertificates().add(new ImportJobContext.CertificateEntry(
                 x509CertificateHolder,
@@ -54,10 +55,8 @@ public class AddCertificateStep implements ImportJobStep {
                 certificateType));
 
         } catch (Exception e) {
-            log.error("Failed to add Certificate to Context", e);
-            return;
+            throw new ImportJobStepException(true,
+                "Unexpected Exception during adding Certificate to Context: " + e.getMessage());
         }
-
-        log.info("Certificate Added to Context");
     }
 }
