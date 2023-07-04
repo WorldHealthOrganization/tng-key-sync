@@ -12,10 +12,6 @@ dgc:
   proxy:
     host: sia-lb.telekom.de
     port: 8080
-  trustAnchor:
-    keyStorePath: x
-    keyStorePass: x
-    certificateAlias: x
   import-job-steps:
     ## EU DCC TrustList
     - name: DownloadFile

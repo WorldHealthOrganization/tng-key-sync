@@ -8,8 +8,4 @@ spring:
     hibernate:
       ddl-auto: none
 dgc:
-  # TODO: Remove Proxy Config
-  proxy:
-    host: sia-lb.telekom.de
-    port: 8080
   import-job-steps: []
