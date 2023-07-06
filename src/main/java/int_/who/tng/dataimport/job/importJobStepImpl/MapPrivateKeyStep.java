@@ -12,7 +12,6 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
@@ -62,11 +61,12 @@ public class MapPrivateKeyStep implements ImportJobStep {
                 .filter(certificateEntry -> {
                     // Check if Signed Data can be verified by PublicKey of Certificate
                     try {
-                        PublicKey publicKey = certificateEntry.getParsedCertificate().getPublicKey();
-                        verifier.initVerify(publicKey);
+                        verifier.initVerify(certificateEntry.getParsedCertificate().getPublicKey());
                         verifier.update(dummyData);
                         return verifier.verify(signature);
                     } catch (InvalidKeyException | SignatureException e) {
+                        log.warn("Invalid Certificate detected: {} - {}", certificateEntry.getCountry(),
+                            certificateEntry.getThumbprint());
                         return false;
                     }
                 })

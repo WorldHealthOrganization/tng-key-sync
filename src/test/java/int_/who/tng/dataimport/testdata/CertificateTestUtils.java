@@ -20,30 +20,27 @@
 
 package int_.who.tng.dataimport.testdata;
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import eu.europa.ec.dgc.gateway.connector.model.ValidationRule;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.List;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.junit.jupiter.api.Assertions;
 
 public class CertificateTestUtils {
 
@@ -62,10 +59,14 @@ public class CertificateTestUtils {
 
     public static X509Certificate generateCertificate(KeyPair keyPair, String country, String commonName,
                                                       Date validFrom, Date validTo) throws Exception {
-        X500Name subject = new X500NameBuilder()
-            .addRDN(X509ObjectIdentifiers.countryName, country)
-            .addRDN(X509ObjectIdentifiers.commonName, commonName)
-            .build();
+        X500NameBuilder subjectBuilder = new X500NameBuilder()
+            .addRDN(X509ObjectIdentifiers.commonName, commonName);
+
+        if (country != null) {
+            subjectBuilder.addRDN(X509ObjectIdentifiers.countryName, country);
+        }
+
+        X500Name subject = subjectBuilder.build();
 
         BigInteger certSerial = new BigInteger(Long.toString(System.currentTimeMillis()));
 
@@ -78,5 +79,15 @@ public class CertificateTestUtils {
         certBuilder.addExtension(Extension.basicConstraints, true, basicConstraints);
 
         return new JcaX509CertificateConverter().getCertificate(certBuilder.build(contentSigner));
+    }
+
+    public static String toPem(X509Certificate certificate) throws IOException {
+        StringWriter stringWriter = new StringWriter();
+
+        try (JcaPEMWriter jcaPEMWriter = new JcaPEMWriter(stringWriter)) {
+            jcaPEMWriter.writeObject(new JcaMiscPEMGenerator(certificate));
+        }
+
+        return stringWriter.toString();
     }
 }
