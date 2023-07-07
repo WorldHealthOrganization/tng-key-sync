@@ -6,7 +6,7 @@ spring:
     password: ''
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 dgc:
   proxy:
     host: sia-lb.telekom.de
