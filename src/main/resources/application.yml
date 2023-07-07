@@ -6,106 +6,10 @@ spring:
     password: ''
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
 dgc:
-  # TODO: Remove Proxy Config
   proxy:
     host: sia-lb.telekom.de
     port: 8080
-  import-job-steps:
-    ## EU DCC TrustList
-    - name: DownloadFile
-      args:
-        - https://ec.europa.eu/assets/eu-dcc/dcc_trustlist.zip
-        - dcc_trustlist.zip
-    - name: DownloadFile
-      args:
-        - https://ec.europa.eu/assets/eu-dcc/dcc_trustlist.zip.sig.txt
-        - dcc_trustlist.zip.sig.txt
-    - name: VerifyFileSignature
-      args:
-        - dcc_trustlist.zip
-        - dcc_trustlist.zip.sig.txt
-        - 84b0309cb751d0660f48d96b7aff5ce950e741916b40264bc7d7c31d875e063b
-    - name: ExtractZip
-      args:
-        - dcc_trustlist.zip
-        - dcc_trustlist
-    - name: ParseCertificates
-      args:
-        - ^dcc_trustlist/DSC/DCC/../[0-9a-f]{64}\.pem$
-        - DSC
-        - PEM
-
-
-    # WHO Trustlist
-    - name: DownloadFile
-      args:
-        - https://github.com/WorldHealthOrganization/tng-participants-uat/archive/refs/heads/FIN/onboardingRequest.zip
-        - who_trustlist.zip
-    - name: ExtractZip
-      args:
-        - who_trustlist.zip
-        - who_trustlist
-    - name: ParseCertificates
-      args:
-        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/TLS/signed/.+\.json$
-        - AUTHENTICATION
-        - JSON
-    - name: ParseCertificates
-      args:
-        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/SCA/signed/.+\.json$
-        - CSCA
-        - JSON
-    - name: ParseCertificates
-      args:
-        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/UP/signed/.+\.json$
-        - UPLOAD
-        - JSON
-
-
-    ## Sign DSC with Upload Certificates
-    - name: MapPrivateKey
-      args:
-        - UPLOAD      # CertificateType
-        - ks.p12      # KeyStore Path
-        - s3cr3t      # KeyStore Password
-        - upload_key  # Key Alias
-        - s3cr3t      # Key Password
-
-    - name: SignCertificates
-      args:
-        - UPLOAD
-        - DSC
-
-
-    ## Persistence (Filter unwanted and already existing Data and persist new entries)
-    - name: RemoveIgnoredCountries
-      args:
-        - ZZ
-
-    - name: RemoveExistingCertificatesFromContext
-      args:
-        - DSC
-    - name: RemoveExistingCertificatesFromContext
-      args:
-        - CSCA
-    - name: RemoveExistingCertificatesFromContext
-      args:
-        - UPLOAD
-    - name: RemoveExistingCertificatesFromContext
-      args:
-        - AUTHENTICATION
-
-    - name: SaveCertificatesInDb
-      args:
-        - DSC
-    - name: SaveCertificatesInDb
-      args:
-        - CSCA
-    - name: SaveCertificatesInDb
-      args:
-        - UPLOAD
-    - name: SaveCertificatesInDb
-      args:
-        - AUTHENTICATION
+  # Define your own steps to import data or use a prepared workflow
+  import-job-steps: []

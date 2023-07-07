@@ -48,7 +48,7 @@ public class HttpClientConfig {
         httpClientBuilder.setSSLContext(SSLContext.getDefault());
         httpClientBuilder.setSSLHostnameVerifier(new DefaultHostnameVerifier());
 
-        if (config.getProxy().getHost() != null
+        if (config.getProxy() != null && config.getProxy().getHost() != null
             && config.getProxy().getPort() != -1
             && !config.getProxy().getHost().isEmpty()) {
             log.info("Using Proxy for HTTP Connection");

@@ -1,0 +1,50 @@
+dgc:
+  import-job-steps:
+    # WHO Trustlist
+    - name: DownloadFile
+      args:
+        - ${TNG_ONBOARDING_ARCHIVE_URL:https://github.com/WorldHealthOrganization/tng-participants-prod/archive/refs/heads/main.zip}
+        - who_trustlist.zip
+    - name: ExtractZip
+      args:
+        - who_trustlist.zip
+        - who_trustlist
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/TLS/signed/.+\.json$
+        - AUTHENTICATION
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/SCA/signed/.+\.json$
+        - CSCA
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/UP/signed/.+\.json$
+        - UPLOAD
+        - JSON
+
+    ## Persistence (Filter unwanted and already existing Data and persist new entries)
+    - name: RemoveIgnoredCountries
+      args: ${TNG_IGNORECOUNTRIES:}
+
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - CSCA
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - UPLOAD
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - AUTHENTICATION
+
+    - name: SaveCertificatesInDb
+      args:
+        - CSCA
+    - name: SaveCertificatesInDb
+      args:
+        - UPLOAD
+    - name: SaveCertificatesInDb
+      args:
+        - AUTHENTICATION
