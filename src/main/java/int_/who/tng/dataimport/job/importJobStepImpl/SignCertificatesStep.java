@@ -23,7 +23,7 @@ public class SignCertificatesStep implements ImportJobStep {
         log.debug("Signing Certificates of Type {} with Certificates of Type {}", toBeSignedCertType, signerCertType);
 
         // Find Certificates with matching Type and without Signature
-        List<ImportJobContext.CertificateEntry> toBesignedCertificates = context.getParsedCertificates().stream()
+        List<ImportJobContext.CertificateEntry> toBeSignedCertificates = context.getParsedCertificates().stream()
             .filter(certificateEntry -> certificateEntry.getCertificateType() == toBeSignedCertType)
             .filter(certificateEntry -> certificateEntry.getSignature() == null)
             .toList();
@@ -38,27 +38,27 @@ public class SignCertificatesStep implements ImportJobStep {
                 (t, t2) -> t));
 
         // Sign all found Certificates
-        for (ImportJobContext.CertificateEntry toBesignedCertificate : toBesignedCertificates) {
+        for (ImportJobContext.CertificateEntry toBeSignedCertificate : toBeSignedCertificates) {
             ImportJobContext.CertificateEntry signerCertificate =
-                signingCertificates.get(toBesignedCertificate.getCountry());
+                signingCertificates.get(toBeSignedCertificate.getCountry());
 
             if (signerCertificate == null) {
-                log.warn("No Signer Certificate for Country {}", toBesignedCertificate.getCountry());
+                log.warn("No Signer Certificate for Country {}", toBeSignedCertificate.getCountry());
                 continue;
             }
 
             String signature = new SignedCertificateMessageBuilder()
                 .withSigningCertificate(signerCertificate.getParsedCertificateHolder(),
                     signerCertificate.getPrivateKey())
-                .withPayload(toBesignedCertificate.getParsedCertificateHolder())
+                .withPayload(toBeSignedCertificate.getParsedCertificateHolder())
                 .buildAsString(true);
 
-            toBesignedCertificate.setSignature(signature);
+            toBeSignedCertificate.setSignature(signature);
             log.debug("Signed Certificate. ToBeSigned: {} {} - {}, Signer: {} {} - {}",
-                toBesignedCertificate.getCertificateType(), toBesignedCertificate.getCountry(),
-                toBesignedCertificate.getThumbprint(),
+                toBeSignedCertificate.getCertificateType(), toBeSignedCertificate.getCountry(),
+                toBeSignedCertificate.getThumbprint(),
                 signerCertificate.getCertificateType(), signerCertificate.getCountry(),
-                toBesignedCertificate.getThumbprint());
+                toBeSignedCertificate.getThumbprint());
         }
 
         log.debug("Finished signing Certificates of Type {} with Certificates of Type {}", toBeSignedCertType,

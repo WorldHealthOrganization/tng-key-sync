@@ -28,8 +28,7 @@ public class ImportJobOrchestrator {
             ImportJobStep importJobStepImpl = importJobSteps.get(step.getName().toString());
 
             if (importJobStepImpl == null) {
-                log.error("Could not find implementation for {}", step.getName());
-                System.exit(1);
+                throw new RuntimeException("Could not find implementation for " + step.getName());
             }
 
             log.info("Executing {} for {} with {} args", importJobStepImpl.getClass().getName(),
@@ -48,21 +47,18 @@ public class ImportJobOrchestrator {
                 }
 
                 if (e.isCritical() && step.isFailOnCriticalException()) {
-                    log.error("Execution will be canceled because of critical error.");
-                    System.exit(1);
+                    throw new RuntimeException("Execution will be canceled because of critical error.");
                 }
             } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
                 log.error(
                     "{} occurred at step {} with args {}: Please check the arguments passed to the import step.",
                     e.getClass().getSimpleName(), step.getName(), step.getArgs());
-                log.error("Execution will be canceled because of critical error.");
-                System.exit(1);
+                throw new RuntimeException("Execution will be canceled because of critical error.");
             } catch (Exception e) {
                 log.error(
                     "Unexpected Exception of type {} occurred at step {} with args {}. See Stacktrace for details.",
                     e.getClass().getSimpleName(), step.getName(), step.getArgs(), e);
-                log.error("Execution will be canceled because of critical error.");
-                System.exit(1);
+                throw new RuntimeException("Execution will be canceled because of critical error.");
             }
         });
 

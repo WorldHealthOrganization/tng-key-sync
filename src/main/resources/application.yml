@@ -6,7 +6,7 @@ spring:
     password: ''
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
 dgc:
   # TODO: Remove Proxy Config
   proxy:
