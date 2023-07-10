@@ -22,7 +22,9 @@ package int_.who.tng.dataimport.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -35,25 +37,43 @@ public class DccConfigProperties {
 
     private final KeyStoreWithAlias trustAnchor = new KeyStoreWithAlias();
 
-    private final Publication publication = new Publication();
+    private final ProxyConfig proxy = new ProxyConfig();
 
-    private final UploadCertConfig uploadCerts = new UploadCertConfig();
-
-    private final List<String> ignoreCountries = new ArrayList<>();
+    private final List<ImportJobStep> importJobSteps = new ArrayList<>();
 
     @Getter
     @Setter
-    public static class UploadCertConfig {
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ImportJobStep {
 
         /**
-         * CommonName used for Self-Signed Upload Certificates.
+         * Name of the Import Job Step to execute
          */
-        private String commonName;
+        private ImportJobStepNames name;
 
         /**
-         * Validity of the created Upload Certificates in days.
+         * [optional] Arguments passed to the step.
          */
-        private Integer validity;
+        private String[] args = new String[0];
+
+        /**
+         * [optional] Specify whether the whole process should fail on critical exception. (default: true)
+         */
+        private boolean failOnCriticalException = true;
+
+        public enum ImportJobStepNames {
+            DownloadFile,
+            VerifyFileSignature,
+            ExtractZip,
+            ParseCertificates,
+            RemoveIgnoredCountries,
+            RemoveExistingCertificatesFromContext,
+            SaveCertificatesInDb,
+            MapPrivateKey,
+            AddCertificate,
+            SignCertificates
+        }
     }
 
     @Getter
@@ -70,18 +90,5 @@ public class DccConfigProperties {
         private String keyStorePath;
         private String keyStorePass;
         private String certificateAlias;
-    }
-
-    @Getter
-    @Setter
-    public static class Publication {
-        /**
-         * List of thumbprints of expected signing certificates for the downloaded Publication Archive.
-         * (SHA-256, HEX representation, lowercase, e.g.
-         * 03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4)
-         */
-        private List<String> allowedSigningCertThumbprints = new ArrayList<>();
-        private String url;
-        private ProxyConfig proxy = new ProxyConfig();
     }
 }

@@ -18,49 +18,50 @@
  * ---license-end
  */
 
-package int_.who.tng.dataimport.client;
+package int_.who.tng.dataimport.config;
 
-import feign.Client;
-import feign.httpclient.ApacheHttpClient;
-import int_.who.tng.dataimport.config.DccConfigProperties;
 import java.security.NoSuchAlgorithmException;
 import javax.net.ssl.SSLContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
+@Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class DccPublicationClientConfig {
+public class HttpClientConfig {
 
     private final DccConfigProperties config;
 
     /**
-     * Configure FeignClient with ProxySettings.
+     * Configure HTTP Client with ProxySettings.
      */
     @Bean
-    public Client publicationDownloadClient() throws NoSuchAlgorithmException {
+    public CloseableHttpClient apacheHttpClient() throws NoSuchAlgorithmException {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
 
         httpClientBuilder.setSSLContext(SSLContext.getDefault());
         httpClientBuilder.setSSLHostnameVerifier(new DefaultHostnameVerifier());
 
-        if (config.getPublication().getProxy().getHost() != null
-            && config.getPublication().getProxy().getPort() != -1
-            && !config.getPublication().getProxy().getHost().isEmpty()) {
-            log.info("Using Proxy for DCC Publication Connection");
+        if (config.getProxy() != null && config.getProxy().getHost() != null
+            && config.getProxy().getPort() != -1
+            && !config.getProxy().getHost().isEmpty()) {
+            log.info("Using Proxy for HTTP Connection");
+
             // Set proxy
             httpClientBuilder.setProxy(new HttpHost(
-                config.getPublication().getProxy().getHost(),
-                config.getPublication().getProxy().getPort()
+                config.getProxy().getHost(),
+                config.getProxy().getPort()
             ));
         } else {
-            log.info("Using no proxy for DCC Publication Connection");
+            log.info("Using no proxy for HTTP Connection");
         }
 
-        return new ApacheHttpClient(httpClientBuilder.build());
+        return httpClientBuilder.build();
     }
 }
