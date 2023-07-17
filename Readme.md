@@ -42,7 +42,7 @@ Downloads a file from given URL and stores it with the provided name in the JobC
 | 0               | URL of the File to download                           | https://example.org/file.zip |
 | 1               | Name with which the file will be stored in JobContext | file.zip                     |
 
-To use a HTTP-Proxy configure it globally within the application properties:
+To use an HTTP-Proxy configure it globally within the application properties:
 
 ```yaml
 dgc:
@@ -53,7 +53,7 @@ dgc:
 
 ### ExtractZip
 
-Extracts a ZIP-Archive within the JobContext. All Files of the archive will be placed in provided directory.
+Extracts a ZIP-Archive within the JobContext. All Files of the archive will be placed into the provided directory.
 
 | Argument Number | Description                              | Example          |
 |-----------------|------------------------------------------|------------------|
@@ -168,13 +168,13 @@ The following steps are executed by this workflow:
 11. Remove Certificates which are already present in Database
 12. Persist remaining Certificates (DSC, TLS, SCA, UP)
 
-The following workflow specific environment variables need to be set:
+The following workflow-specific environment variables need to be set:
 
 | ENV                        | Description                                                                                            | Optional | Example (Default if optional)                                                                |
 |----------------------------|--------------------------------------------------------------------------------------------------------|----------|----------------------------------------------------------------------------------------------|
 | EUDCC_ARCHIVE_URL          | URL to Download the Publication Archive of EU DCC                                                      | Yes      | https://ec.europa.eu/assets/eu-dcc/dcc_trustlist.zip                                         |    
 | EUDCC_SIGNATURE_URL        | URL to Download the Signature File of Publication Archive of EU DCC                                    | Yes      | https://ec.europa.eu/assets/eu-dcc/dcc_trustlist.zip.sig.txt                                 |    
-| EUDCC_SIGNATURE_SIGNERCERT | SHA-256 thumbprints (HEX, lowercase) of allowed signer certificate for the EU DCC Publication Archive. | No       | 84b0309cb751d0660f48d96b7aff5ce950e741916b40264bc7d7c31d875e063b                             |    
+| EUDCC_SIGNATURE_SIGNERCERT | SHA-256 thumbprints (HEX, lowercase) of allowed signer certificate for the EU DCC Publication Archive  | No       | 84b0309cb751d0660f48d96b7aff5ce950e741916b40264bc7d7c31d875e063b                             |    
 | TNG_ONBOARDING_ARCHIVE_URL | URL to Download the Archive with onboarded Certificates for TNG                                        | Yes      | https://github.com/WorldHealthOrganization/tng-participants-prod/archive/refs/heads/main.zip |
 | TNG_UPSYNC_KEYSTOREPATH    | Path to KeyStore (JKS or PKCS#12) holding the UP_SYNC PrivateKey                                       | No       | /var/keys/up_sync.p12                                                                        |    
 | TNG_UPSYNC_KEYSTOREPASS    | Password of the KeyStore and the KeyEntry                                                              | No       | s3cr3t                                                                                       |
@@ -235,6 +235,6 @@ Optional Settings:
 
 # Run
 
-Just run the JAVA Application (or the Docker Image). Import Job will be started automatically without any other trigger.
+Just run the Java Application (or the Docker Image). Import Job will be started automatically without any other trigger.
 
-On success the tool will exit with exit code 0. On error, it will return with exit code 1.
+On success, the tool will exit with exit code 0. On error, it will return with exit code 1.
