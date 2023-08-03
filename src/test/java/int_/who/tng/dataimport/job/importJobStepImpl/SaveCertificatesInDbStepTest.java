@@ -85,6 +85,9 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertEquals(TEST_DUMMY_SIGNATURE, firstSignerInformationEntity.getSignature());
         Assertions.assertEquals(SignerInformationEntity.CertificateType.DSC,
             firstSignerInformationEntity.getCertificateType());
+        Assertions.assertEquals(firstSignerInformationEntity.getKid(), firstSignerInformationEntity.getThumbprint().substring(0, 16));
+        Assertions.assertNotNull(firstSignerInformationEntity.getUuid(), "UUID not set for SignerInformationEntity");
+        Assertions.assertNotNull(firstSignerInformationEntity.getDomain(), "Domain not set for TrustedPartyEntity");
 
         SignerInformationEntity secondSignerInformationEntity =
             signerInformationEntityArgumentCaptor.getAllValues().get(1);
@@ -96,6 +99,10 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertEquals(TEST_DUMMY_SIGNATURE, secondSignerInformationEntity.getSignature());
         Assertions.assertEquals(SignerInformationEntity.CertificateType.DSC,
             secondSignerInformationEntity.getCertificateType());
+        Assertions.assertEquals(secondSignerInformationEntity.getKid(), secondSignerInformationEntity.getThumbprint().substring(0, 16));
+        Assertions.assertNotEquals(firstSignerInformationEntity.getKid(), secondSignerInformationEntity.getKid());
+        Assertions.assertNotNull(secondSignerInformationEntity.getUuid(), "UUID not set for SignerInformationEntity");
+        Assertions.assertNotNull(secondSignerInformationEntity.getDomain(), "Domain not set for TrustedPartyEntity");
     }
 
     @ParameterizedTest
@@ -138,6 +145,9 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertEquals(TEST_DUMMY_SIGNATURE, firstTrustedPartyEntity.getSignature());
         Assertions.assertEquals(TrustedPartyEntity.CertificateType.valueOf(type),
             firstTrustedPartyEntity.getCertificateType());
+        Assertions.assertEquals(firstTrustedPartyEntity.getKid(),firstTrustedPartyEntity.getThumbprint().substring(0, 16));
+        Assertions.assertNotNull(firstTrustedPartyEntity.getUuid(),"UUID not set for TrustedPartyEntity");
+        Assertions.assertNotNull(firstTrustedPartyEntity.getDomain(),"Domain not set for TrustedPartyEntity");
 
         TrustedPartyEntity secondTrustedPartyEntity = trustedPartyEntityArgumentCaptor.getAllValues().get(1);
         Assertions.assertEquals(Base64.getEncoder().encodeToString(certificate2.getEncoded()),
@@ -148,6 +158,10 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertEquals(TEST_DUMMY_SIGNATURE, secondTrustedPartyEntity.getSignature());
         Assertions.assertEquals(TrustedPartyEntity.CertificateType.valueOf(type),
             secondTrustedPartyEntity.getCertificateType());
+        Assertions.assertEquals(secondTrustedPartyEntity.getKid(),secondTrustedPartyEntity.getThumbprint().substring(0, 16));
+        Assertions.assertNotEquals(firstTrustedPartyEntity.getKid(), secondTrustedPartyEntity.getKid());
+        Assertions.assertNotNull(secondTrustedPartyEntity.getUuid(),"UUID not set for TrustedPartyEntity");
+        Assertions.assertNotNull(secondTrustedPartyEntity.getDomain(),"Domain not set for TrustedPartyEntity");
     }
 
     @ParameterizedTest

@@ -56,6 +56,7 @@ public class SaveCertificatesInDbStep implements ImportJobStep {
         trustedPartyEntity.setCertificateType(
             TrustedPartyEntity.CertificateType.valueOf(certificateEntry.getCertificateType().toString()));
         trustedPartyEntity.setThumbprint(certificateEntry.getThumbprint());
+        trustedPartyEntity.setKid(certificateEntry.getThumbprint().substring(0, 16));
         trustedPartyEntity.setRawData(Base64.getEncoder().encodeToString(certificateEntry.getRawCertificate()));
         trustedPartyEntity.setSignature(certificateEntry.getSignature());
 
@@ -71,6 +72,7 @@ public class SaveCertificatesInDbStep implements ImportJobStep {
         signerInformationEntity.setCertificateType(
             SignerInformationEntity.CertificateType.valueOf(certificateEntry.getCertificateType().toString()));
         signerInformationEntity.setThumbprint(certificateEntry.getThumbprint());
+        signerInformationEntity.setKid(certificateEntry.getThumbprint().substring(0, 16));
         signerInformationEntity.setRawData(Base64.getEncoder().encodeToString(certificateEntry.getRawCertificate()));
         signerInformationEntity.setSignature(certificateEntry.getSignature());
 
