@@ -42,7 +42,7 @@ Downloads a file from given URL and stores it with the provided name in the JobC
 | 0               | URL of the File to download                           | https://example.org/file.zip |
 | 1               | Name with which the file will be stored in JobContext | file.zip                     |
 
-To use an HTTP-Proxy configure it globally within the application properties:
+To use a HTTP-Proxy configure it globally within the application properties:
 
 ```yaml
 dgc:
