@@ -18,6 +18,7 @@ import java.security.KeyPair;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,6 +45,8 @@ public class SaveCertificatesInDbStepTest {
 
     private static final String TEST_COUNTRY_CODE = "DE";
     private static final String TEST_DUMMY_SIGNATURE = "dummy-ta-signature";
+    
+    private static final String TEST_DCC_DOMAIN = "DCC";
 
     @Test
     void testSaveDSC() throws Exception {
@@ -85,6 +88,10 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertEquals(TEST_DUMMY_SIGNATURE, firstSignerInformationEntity.getSignature());
         Assertions.assertEquals(SignerInformationEntity.CertificateType.DSC,
             firstSignerInformationEntity.getCertificateType());
+        Assertions.assertNull(firstSignerInformationEntity.getKid());
+        Assertions.assertDoesNotThrow(() -> UUID.fromString(firstSignerInformationEntity.getUuid()));
+        Assertions.assertEquals(TEST_DCC_DOMAIN, firstSignerInformationEntity.getDomain());
+
 
         SignerInformationEntity secondSignerInformationEntity =
             signerInformationEntityArgumentCaptor.getAllValues().get(1);
@@ -96,6 +103,9 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertEquals(TEST_DUMMY_SIGNATURE, secondSignerInformationEntity.getSignature());
         Assertions.assertEquals(SignerInformationEntity.CertificateType.DSC,
             secondSignerInformationEntity.getCertificateType());
+        Assertions.assertNull(secondSignerInformationEntity.getKid());
+        Assertions.assertDoesNotThrow(() -> UUID.fromString(secondSignerInformationEntity.getUuid()));
+        Assertions.assertEquals(TEST_DCC_DOMAIN, secondSignerInformationEntity.getDomain());
     }
 
     @ParameterizedTest
@@ -138,6 +148,9 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertEquals(TEST_DUMMY_SIGNATURE, firstTrustedPartyEntity.getSignature());
         Assertions.assertEquals(TrustedPartyEntity.CertificateType.valueOf(type),
             firstTrustedPartyEntity.getCertificateType());
+        Assertions.assertNull(firstTrustedPartyEntity.getKid());
+        Assertions.assertDoesNotThrow(() -> UUID.fromString(firstTrustedPartyEntity.getUuid()));
+        Assertions.assertEquals(TEST_DCC_DOMAIN, firstTrustedPartyEntity.getDomain());
 
         TrustedPartyEntity secondTrustedPartyEntity = trustedPartyEntityArgumentCaptor.getAllValues().get(1);
         Assertions.assertEquals(Base64.getEncoder().encodeToString(certificate2.getEncoded()),
@@ -148,6 +161,9 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertEquals(TEST_DUMMY_SIGNATURE, secondTrustedPartyEntity.getSignature());
         Assertions.assertEquals(TrustedPartyEntity.CertificateType.valueOf(type),
             secondTrustedPartyEntity.getCertificateType());
+        Assertions.assertNull(secondTrustedPartyEntity.getKid());
+        Assertions.assertDoesNotThrow(() -> UUID.fromString(secondTrustedPartyEntity.getUuid()));
+        Assertions.assertEquals(TEST_DCC_DOMAIN, secondTrustedPartyEntity.getDomain());
     }
 
     @ParameterizedTest
