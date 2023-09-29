@@ -6,7 +6,10 @@ spring:
     password: ''
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create #TODO set back to validate !!!
+  h2:
+    console:
+      enabled: true
 dgc:
   proxy:
     host: sia-lb.telekom.de

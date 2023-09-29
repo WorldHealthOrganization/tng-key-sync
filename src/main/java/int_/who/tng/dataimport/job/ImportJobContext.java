@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bouncycastle.cert.X509CertificateHolder;
-
+//TODO: extend context to share contents accross steps
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +20,10 @@ public class ImportJobContext {
     private final Map<String, byte[]> files = new HashMap<>();
 
     private final List<CertificateEntry> parsedCertificates = new ArrayList<>();
+
+    //TODO: Add parsedTrustedIssuers
+
+    //TODO: Add parsedTrustedReferences
 
     public enum CertificateType {
         DSC,
@@ -54,5 +58,7 @@ public class ImportJobContext {
 
         private CertificateType certificateType;
     }
+
+    //TODO: Add TrsutedIssuerEntry ...
 
 }

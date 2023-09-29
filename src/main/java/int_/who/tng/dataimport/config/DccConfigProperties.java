@@ -72,7 +72,12 @@ public class DccConfigProperties {
             SaveCertificatesInDb,
             MapPrivateKey,
             AddCertificate,
-            SignCertificates
+            SignCertificates,
+            //TODO: Add new steps
+            ParseTrustedIssuerStep,
+            RemoveExistingIssuersFromContext,
+            RemoveExistingReferencesFromContext
+            //TODO: Add new steps
         }
     }
 
