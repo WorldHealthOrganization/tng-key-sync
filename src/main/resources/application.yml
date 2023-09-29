@@ -11,8 +11,5 @@ spring:
     console:
       enabled: true
 dgc:
-  proxy:
-    host: sia-lb.telekom.de
-    port: 8080
   # Define your own steps to import data or use a prepared workflow
   import-job-steps: []
