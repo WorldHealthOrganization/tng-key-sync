@@ -179,6 +179,6 @@ public class SignCertificatesStepTest {
             certificateUtils.getCertThumbprint(certificate),
             signature,
             countryCode,
-            certificateType));
+            certificateType, null));
     }
 }

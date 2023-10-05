@@ -26,17 +26,17 @@ dgc:
         - JSON
     - name: ParseCertificates
       args:
-        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/RACSEL-DDVC/TLS/signed/.+\.json$
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/TLS/signed/.+\.json$
         - AUTHENTICATION
         - JSON
     - name: ParseCertificates
       args:
-        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/RACSEL-DDVC/SCA/signed/.+\.json$
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/SCA/signed/.+\.json$
         - CSCA
         - JSON
     - name: ParseCertificates
       args:
-        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/RACSEL-DDVC/UP/signed/.+\.json$
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/UP/signed/.+\.json$
         - UPLOAD
         - JSON
 

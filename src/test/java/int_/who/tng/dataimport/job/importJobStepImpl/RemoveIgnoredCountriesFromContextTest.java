@@ -61,6 +61,6 @@ public class RemoveIgnoredCountriesFromContextTest {
             certificateUtils.getCertThumbprint(certificate),
             null,
             countryCode,
-            certificateType));
+            certificateType, null));
     }
 }

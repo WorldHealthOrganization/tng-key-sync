@@ -53,6 +53,8 @@ public class ImportJobContext {
         private String country;
 
         private CertificateType certificateType;
+
+        private String domain;
     }
 
 }

@@ -130,6 +130,6 @@ public class RemoveExistingCertificatesFromContextTest {
             certificateUtils.getCertThumbprint(certificate),
             null,
             TEST_COUNTRY_CODE,
-            certificateType));
+            certificateType, null));
     }
 }
