@@ -53,8 +53,7 @@ public class ParseCertificatesStep implements ImportJobStep {
                 String domain = null;
                 try {
                     domain = matcher.group("DOMAIN");
-                } catch (IllegalArgumentException e) {
-                    //ignore
+                } catch (IllegalArgumentException ignored) {
                 }
 
 
@@ -101,7 +100,7 @@ public class ParseCertificatesStep implements ImportJobStep {
                     null,
                     countryCode,
                     certificateType,
-                        domain);
+                    domain);
             } else {
                 throw new ImportJobStepException(true, "Failed to parse Certificate as X509Certificate");
             }
@@ -137,7 +136,7 @@ public class ParseCertificatesStep implements ImportJobStep {
                 json.trustAnchorSignature,
                 countryCode,
                 certificateType,
-                    domain);
+                domain);
 
         } catch (DatabindException e) {
             throw new ImportJobStepException(true, "Failed to parse JSON: " + e.getMessage());

@@ -177,7 +177,7 @@ public class SaveCertificatesInDbStepTest {
                 CertificateTestUtils.generateCertificate(keyPair, TEST_COUNTRY_CODE, "Testcert 1");
 
         ImportJobContext context = new ImportJobContext();
-        addCertificateForDomain(context, certificate1, ImportJobContext.CertificateType.valueOf(type), TEST_DUMMY_SIGNATURE,
+        addCertificateToContext(context, certificate1, ImportJobContext.CertificateType.valueOf(type), TEST_DUMMY_SIGNATURE,
                 TEST_COUNTRY_CODE, TEST_RACSEL_DDVC_DOMAIN);
 
         ArgumentCaptor<TrustedPartyEntity> trustedPartyEntityArgumentCaptor =
@@ -364,7 +364,7 @@ public class SaveCertificatesInDbStepTest {
             certificateType, null));
     }
 
-    private void addCertificateForDomain(ImportJobContext context, X509Certificate certificate,
+    private void addCertificateToContext(ImportJobContext context, X509Certificate certificate,
                                 ImportJobContext.CertificateType certificateType, String signature, String countryCode, String domain)
             throws CertificateEncodingException, IOException {
         context.getParsedCertificates().add(new ImportJobContext.CertificateEntry(
@@ -375,6 +375,7 @@ public class SaveCertificatesInDbStepTest {
                 certificateUtils.getCertThumbprint(certificate),
                 signature,
                 countryCode,
-                certificateType, domain));
+                certificateType,
+                domain));
     }
 }
