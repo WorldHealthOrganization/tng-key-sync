@@ -14,8 +14,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,12 +46,21 @@ public class ParseCertificatesStep implements ImportJobStep {
 
         List<ImportJobContext.CertificateEntry> parsedCerts = context.getFiles().entrySet().stream()
             .filter(entry -> fileNamePattern.matcher(entry.getKey()).matches())
-            .map(Map.Entry::getValue)
             .map(file -> {
+                //TODO: handover Domain to context
+                Matcher matcher = fileNamePattern.matcher(file.getKey());
+                matcher.find();
+                String domain = null;
+                try {
+                    domain = matcher.group("DOMAIN");
+                } catch (IllegalArgumentException ignored) {
+                }
+
+
                 if (format.equalsIgnoreCase("JSON")) {
-                    return parseJson(file, certificateType);
+                    return parseJson(file.getValue(), certificateType, domain);
                 } else if (format.equalsIgnoreCase("PEM")) {
-                    return parsePem(file, certificateType);
+                    return parsePem(file.getValue(), certificateType, domain);
                 } else {
                     throw new ImportJobStepException(true, format + " is not a known format for certificate files");
                 }
@@ -64,7 +72,7 @@ public class ParseCertificatesStep implements ImportJobStep {
         log.debug("Finished parsing {} File into Certificate Objects.", parsedCerts.size());
     }
 
-    private ImportJobContext.CertificateEntry parsePem(byte[] file, ImportJobContext.CertificateType certificateType)
+    private ImportJobContext.CertificateEntry parsePem(byte[] file, ImportJobContext.CertificateType certificateType, String domain)
         throws ImportJobStepException {
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X509");
@@ -91,7 +99,8 @@ public class ParseCertificatesStep implements ImportJobStep {
                     certificateUtils.getCertThumbprint(x509Certificate),
                     null,
                     countryCode,
-                    certificateType);
+                    certificateType,
+                    domain);
             } else {
                 throw new ImportJobStepException(true, "Failed to parse Certificate as X509Certificate");
             }
@@ -100,7 +109,7 @@ public class ParseCertificatesStep implements ImportJobStep {
         }
     }
 
-    private ImportJobContext.CertificateEntry parseJson(byte[] file, ImportJobContext.CertificateType certificateType)
+    private ImportJobContext.CertificateEntry parseJson(byte[] file, ImportJobContext.CertificateType certificateType, String domain)
         throws ImportJobStepException {
         try {
             JsonStructure json = objectMapper.readValue(file, JsonStructure.class);
@@ -126,7 +135,8 @@ public class ParseCertificatesStep implements ImportJobStep {
                 certificateUtils.getCertThumbprint(x509CertificateHolder),
                 json.trustAnchorSignature,
                 countryCode,
-                certificateType);
+                certificateType,
+                domain);
 
         } catch (DatabindException e) {
             throw new ImportJobStepException(true, "Failed to parse JSON: " + e.getMessage());

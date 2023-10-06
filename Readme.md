@@ -79,11 +79,11 @@ certificate.
 
 Scans the JobContext Files for certificates and parses them in order to prepare them for later import.
 
-| Argument Number | Description                                                                                             | Example                        |
-|-----------------|---------------------------------------------------------------------------------------------------------|--------------------------------|
-| 0               | RegEx to define which files should be parsed                                                            | ^zip-file-content/DSC/.*\.pem$ |
-| 1               | CertificateType the parsed certificates should be handled as (one of AUTHENTICATION, UPLOAD, CSCA, DSC) | DSC                            |
-| 2               | Input Format of the files (one of PEM, JSON - see below for details)                                    | PEM                            |
+| Argument Number | Description                                                                                                                                                                                            | Example                                                                                                                         |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| 0               | RegEx to define which files should be parsed. (Optionally RegEx capture group "DOMAIN" can be used to specify the domain. If not used default domain "DCC" will be used.)                              | ^zip-file-content/DSC/.\*\.pem$<br/><br/>with Domain Capture Group: ^zip-file-content/DSC/(?\<DOMAIN\>[\w-]+)/.\*.pem           |
+| 1               | CertificateType the parsed certificates should be handled as (one of AUTHENTICATION, UPLOAD, CSCA, DSC)                                                                                                | DSC                                                                                                                             |
+| 2               | Input Format of the files (one of PEM, JSON - see below for details)                                                                                                                                   | PEM                                                                                                                             |
 
 The ParseCertificates Step can handle two different input formats for certificates:
 

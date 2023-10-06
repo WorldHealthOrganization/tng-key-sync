@@ -48,6 +48,8 @@ public class SaveCertificatesInDbStepTest {
     
     private static final String TEST_DCC_DOMAIN = "DCC";
 
+    private static final String TEST_RACSEL_DDVC_DOMAIN = "RACSEL-DDVC";
+
     @Test
     void testSaveDSC() throws Exception {
         KeyPair keyPair = CertificateTestUtils.generateKeyPair();
@@ -164,6 +166,34 @@ public class SaveCertificatesInDbStepTest {
         Assertions.assertNull(secondTrustedPartyEntity.getKid());
         Assertions.assertDoesNotThrow(() -> UUID.fromString(secondTrustedPartyEntity.getUuid()));
         Assertions.assertEquals(TEST_DCC_DOMAIN, secondTrustedPartyEntity.getDomain());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD"})
+    void testSaveTrustedPartyWithNonDefaultDomain(String type) throws Exception {
+        KeyPair keyPair = CertificateTestUtils.generateKeyPair();
+
+        X509Certificate certificate1 =
+                CertificateTestUtils.generateCertificate(keyPair, TEST_COUNTRY_CODE, "Testcert 1");
+
+        ImportJobContext context = new ImportJobContext();
+        addCertificateToContext(context, certificate1, ImportJobContext.CertificateType.valueOf(type), TEST_DUMMY_SIGNATURE,
+                TEST_COUNTRY_CODE, TEST_RACSEL_DDVC_DOMAIN);
+
+        ArgumentCaptor<TrustedPartyEntity> trustedPartyEntityArgumentCaptor =
+                ArgumentCaptor.forClass(TrustedPartyEntity.class);
+
+        when(trustedPartyRepositoryMock.save(trustedPartyEntityArgumentCaptor.capture()))
+                .thenAnswer(invocation -> (invocation.getArgument(0)));
+
+        saveCertificatesInDbStep.exec(context, type);
+
+        verify(trustedPartyRepositoryMock, times(1)).save(any());
+        verify(signerInformationRepositoryMock, never()).save(any());
+
+        TrustedPartyEntity firstTrustedPartyEntity = trustedPartyEntityArgumentCaptor.getAllValues().get(0);
+        Assertions.assertEquals(TEST_RACSEL_DDVC_DOMAIN, firstTrustedPartyEntity.getDomain());
+
     }
 
     @ParameterizedTest
@@ -331,6 +361,21 @@ public class SaveCertificatesInDbStepTest {
             certificateUtils.getCertThumbprint(certificate),
             signature,
             countryCode,
-            certificateType));
+            certificateType, null));
+    }
+
+    private void addCertificateToContext(ImportJobContext context, X509Certificate certificate,
+                                ImportJobContext.CertificateType certificateType, String signature, String countryCode, String domain)
+            throws CertificateEncodingException, IOException {
+        context.getParsedCertificates().add(new ImportJobContext.CertificateEntry(
+                certificateUtils.convertCertificate(certificate),
+                certificate,
+                null,
+                certificate.getEncoded(),
+                certificateUtils.getCertThumbprint(certificate),
+                signature,
+                countryCode,
+                certificateType,
+                domain));
     }
 }

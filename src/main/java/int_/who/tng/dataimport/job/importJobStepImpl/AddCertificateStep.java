@@ -52,7 +52,8 @@ public class AddCertificateStep implements ImportJobStep {
                 certificateUtils.getCertThumbprint(x509CertificateHolder),
                 null,
                 countryCode,
-                certificateType));
+                certificateType,
+                null));
 
         } catch (Exception e) {
             throw new ImportJobStepException(true,
