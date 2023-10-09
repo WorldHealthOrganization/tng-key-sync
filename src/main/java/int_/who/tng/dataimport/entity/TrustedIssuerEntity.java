@@ -20,16 +20,18 @@
 
 package int_.who.tng.dataimport.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.ZonedDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
-import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -42,6 +44,64 @@ public class TrustedIssuerEntity extends FederatedEntity {
     @Column(name = "id")
     private Long id;
 
-    //TODO refactor to trusted issuer entity of TNG
+    /**
+     * Timestamp of the Record.
+     */
+    @Column(name = "created_at", nullable = false)
+    private ZonedDateTime createdAt = ZonedDateTime.now();
 
+    /**
+     * ISO 3166 Alpha-2 Country Code
+     * (plus code "EU" for administrative European Union entries).
+     */
+    @Column(name = "country", nullable = false, length = 2)
+    private String country;
+
+    /**
+     * URL of the service, can be HTTP(s) or DID URL.
+     */
+    @Column(name = "url", nullable = false, length = 1024)
+    private String url;
+
+    /**
+     * Name of the service.
+     */
+    @Column(name = "name", nullable = false, length = 512)
+    private String name;
+
+    /**
+     * Type of the URL (HTTP, DID).
+     */
+    @Column(name = "url_type", nullable = false, length = 25)
+    @Enumerated(EnumType.STRING)
+    private UrlType urlType;
+
+    /**
+     * SHA-256 Thumbprint of the certificate (hex encoded).
+     */
+    @Column(name = "thumbprint", length = 64)
+    private String thumbprint;
+
+    /**
+     * SSL Certificate of the endpoint (if applicable).
+     */
+    @Column(name = "ssl_public_key", length = 2048)
+    private String sslPublicKey;
+
+    /**
+     * Type of Key Storage. E.g JWKS, DIDDocument etc. (If applicable)
+     */
+    @Column(name = "key_storage_type", length = 128)
+    private String keyStorageType;
+
+    /**
+     * Signature of the TrustAnchor.
+     */
+    @Column(name = "signature", nullable = false, length = 6000)
+    String signature;
+
+    public enum UrlType {
+        HTTP,
+        DID
+    }
 }
