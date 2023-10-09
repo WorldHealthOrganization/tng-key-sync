@@ -24,6 +24,21 @@ dgc:
         - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/UP/signed/.+\.json$
         - UPLOAD
         - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/TLS/signed/.+\.json$
+        - AUTHENTICATION
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/SCA/signed/.+\.json$
+        - CSCA
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/UP/signed/.+\.json$
+        - UPLOAD
+        - JSON
 
     ## Persistence (Filter unwanted and already existing Data and persist new entries)
     - name: RemoveIgnoredCountries

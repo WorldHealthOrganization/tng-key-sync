@@ -58,7 +58,9 @@ public class SaveCertificatesInDbStep implements ImportJobStep {
         trustedPartyEntity.setThumbprint(certificateEntry.getThumbprint());
         trustedPartyEntity.setRawData(Base64.getEncoder().encodeToString(certificateEntry.getRawCertificate()));
         trustedPartyEntity.setSignature(certificateEntry.getSignature());
-
+        if (certificateEntry.getDomain() != null) {
+            trustedPartyEntity.setDomain(certificateEntry.getDomain());
+        }
         trustedPartyRepository.save(trustedPartyEntity);
 
         log.debug("Inserted TrustedParty with thumbprint {} for country {}",
@@ -73,6 +75,9 @@ public class SaveCertificatesInDbStep implements ImportJobStep {
         signerInformationEntity.setThumbprint(certificateEntry.getThumbprint());
         signerInformationEntity.setRawData(Base64.getEncoder().encodeToString(certificateEntry.getRawCertificate()));
         signerInformationEntity.setSignature(certificateEntry.getSignature());
+        if (certificateEntry.getDomain() != null){
+            signerInformationEntity.setDomain(certificateEntry.getDomain());
+        }
 
         signerInformationRepository.save(signerInformationEntity);
 

@@ -107,6 +107,32 @@ public class ParseCertificatesStepTest {
     }
 
     @Test
+    void testParsingCertificatesWithDomainExtractedByRegex() throws Exception {
+        KeyPair keyPair = CertificateTestUtils.generateKeyPair();
+
+        X509Certificate certificate1 =
+                CertificateTestUtils.generateCertificate(keyPair, TEST_COUNTRY_CODE, "Certificate 1");
+
+        ImportJobContext context = new ImportJobContext();
+        context.getFiles().put(TEST_CERTIFICATE_1_FILENAME_JSON, getJson(certificate1).getBytes(
+                StandardCharsets.UTF_8));
+
+
+        parseCertificatesStep.exec(context, "^abc\\/def\\/(?<DOMAIN>[\\w-]+)\\/.*\\.json$",
+                ImportJobContext.CertificateType.UPLOAD.toString(), "JSON");
+
+        Assertions.assertEquals(1, context.getParsedCertificates().size());
+        for (ImportJobContext.CertificateEntry certificateEntry : context.getParsedCertificates()) {
+            if (certificateEntry.getParsedCertificate().equals(certificate1)) {
+                checkCertEntry(certificateEntry, certificate1, TEST_TRUSTANCHOR_SIGNATURE);
+                Assertions.assertEquals("ghi", certificateEntry.getDomain());
+            } else {
+                Assertions.fail("Unexpected cert in context");
+            }
+        }
+    }
+
+    @Test
     void testOnlyRegExMatchingCertsShouldBeProcessed() throws Exception {
         KeyPair keyPair = CertificateTestUtils.generateKeyPair();
 
