@@ -95,6 +95,16 @@ The ParseCertificates Step can handle two different input formats for certificat
     * ```country``` - Ignored, actual value will be extracted from certificate
 * PEM - Just PKCS#8 Encoded Certificates
 
+### ParseTrustedIssuers
+
+Scans the JobContext Files for trusted issuer json files and parses them in order to prepare them for later import.
+
+| Argument Number | Description                                                                                                                                                                                            | Example                                                                                                                      |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| 0               | RegEx to define which files should be parsed. (Optionally RegEx capture group "DOMAIN" can be used to specify the domain. If not used default domain "DCC" will be used.)                              | ^who_trustlist\/tng-participants-[\w-]+\/(?\<COUNTRYALPHA3\>.{3})\/onboarding\/(?\<DOMAIN\>[\w-]+)\/ISSUER\/signed\/.+\.json |
+
+The ParseTrustedIssuers Step can handle JSON input formats as described in [Trusted Issuer onboarding specification](https://github.com/WorldHealthOrganization/tng-participant-template/blob/main/onboarding/DDCC/ISSUER/trusted-issuer-onboarding-specification.md)
+
 ### RemoveExistingCertificatesFromContext
 
 Removes all Certificates from JobContext which already exist in target database.
@@ -102,6 +112,10 @@ Removes all Certificates from JobContext which already exist in target database.
 | Argument Number | Description                                                                               | Example |
 |-----------------|-------------------------------------------------------------------------------------------|---------|
 | 0               | CertificateType the cleanup should be done for (one of AUTHENTICATION, UPLOAD, CSCA, DSC) | DSC     |
+
+### RemoveExistingTrustedIssuersFromContext
+
+Removes all Trusted Issuers from JobContext which already exist in target database. No arguments required.
 
 ### RemoveIgnoredCountries
 
@@ -118,6 +132,11 @@ Final Step to persist processed certificates in Database.
 | Argument Number | Description                                                           | Example |
 |-----------------|-----------------------------------------------------------------------|---------|
 | 0               | CertificateType to persist (one of AUTHENTICATION, UPLOAD, CSCA, DSC) | DSC     |
+
+### SaveTrustedIssuersInDb
+
+Final step to persist processed trusted issuers in database. No arguments required.
+It will only save trusted issuers which are signed and have a alpha-2 country code.
 
 ### SignCertificates
 
@@ -199,11 +218,14 @@ This workflow imports all onboarded Certificates from TNG Onboarding Repository.
 The following steps are executed by this workflow:
 
 1. Download ZIP Archive from TNG Onboarding Repository
-2. Extract ZIP Archive
-3. Parse all TLS, SCA and UP Certificates
-4. Remove Certificates from Countries which are on the Ignore-List
-5. Remove Certificates which are already present in Database
-6. Persist remaining Certificates (TLS, SCA, UP)
+1. Extract ZIP Archive
+1. Parse all TLS, SCA and UP Certificates
+1. Parse all Trusted Issuers
+1. Remove Certificates from Countries which are on the Ignore-List
+1. Remove Certificates which are already present in Database
+1. Remove Trusted Issuers which are already present in database
+1. Persist remaining Certificates (TLS, SCA, UP)
+1. Persist remaining Trusted Issuers
 
 The following workflow specific environment variables need to be set:
 

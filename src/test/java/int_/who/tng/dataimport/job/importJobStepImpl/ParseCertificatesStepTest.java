@@ -25,7 +25,6 @@ public class ParseCertificatesStepTest {
     CertificateUtils certificateUtils;
 
     private final static String TEST_COUNTRY_CODE = "DE";
-
     private final static String TEST_TRUSTANCHOR_SIGNATURE = "dummy-ta-signature";
     private final static String TEST_CERTIFICATE_1_FILENAME_PEM = "abc/def/ghi/cert1.pem";
     private final static String TEST_CERTIFICATE_1_FILENAME_JSON = "abc/def/ghi/cert1.json";

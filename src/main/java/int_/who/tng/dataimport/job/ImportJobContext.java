@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bouncycastle.cert.X509CertificateHolder;
-//TODO: extend context to share contents accross steps
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class ImportJobContext {
 
     private final List<CertificateEntry> parsedCertificates = new ArrayList<>();
 
-    //TODO: Add parsedTrustedIssuers
+    private final List<TrustedIssuerEntry> parsedIssuers = new ArrayList<>();
 
     //TODO: Add parsedTrustedReferences
 
@@ -61,6 +61,27 @@ public class ImportJobContext {
         private String domain;
     }
 
-    //TODO: Add TrsutedIssuerEntry ...
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class TrustedIssuerEntry {
 
+        private String name;
+
+        private String url;
+
+        private String urlType;
+
+        private String hash;
+
+        private List<String> sslPublicKeys;
+
+        private String signature;
+
+        private String country;
+
+        private String countryAlpha3;
+
+        private String domain;
+    }
 }
