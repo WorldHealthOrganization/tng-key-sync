@@ -24,6 +24,9 @@ public class RemoveIgnoredCountriesStep implements ImportJobStep {
         context.getParsedCertificates()
             .removeIf(certificateEntry -> ignoredCountries.contains(certificateEntry.getCountry()));
 
+        //TODO: add removal on Trusted Issuers in context
+        //TODO: add removal on Trusted References in context
+
         log.debug("Finished filtering Certificates for ignored countries. {} of {} entries were removed.",
             preProcessSize - context.getParsedCertificates().size(), preProcessSize);
     }

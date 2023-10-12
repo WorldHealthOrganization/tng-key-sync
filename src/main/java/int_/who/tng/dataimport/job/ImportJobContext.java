@@ -21,6 +21,10 @@ public class ImportJobContext {
 
     private final List<CertificateEntry> parsedCertificates = new ArrayList<>();
 
+    private final List<TrustedIssuerEntry> parsedIssuers = new ArrayList<>();
+
+    //TODO: Add parsedTrustedReferences
+
     public enum CertificateType {
         DSC,
         CSCA,
@@ -57,4 +61,27 @@ public class ImportJobContext {
         private String domain;
     }
 
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class TrustedIssuerEntry {
+
+        private String name;
+
+        private String url;
+
+        private String urlType;
+
+        private String hash;
+
+        private List<String> sslPublicKeys;
+
+        private String signature;
+
+        private String country;
+
+        private String countryAlpha3;
+
+        private String domain;
+    }
 }

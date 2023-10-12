@@ -6,7 +6,10 @@ spring:
     password: ''
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create #TODO set back to validate !!!
+  h2:
+    console:
+      enabled: true
 dgc:
   # Define your own steps to import data or use a prepared workflow
   import-job-steps: []
