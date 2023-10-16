@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service("ParseTrustedIssuersStep")
+@Service("ParseTrustedIssuers")
 @RequiredArgsConstructor
 @Slf4j
 public class ParseTrustedIssuersStep implements ImportJobStep {
