@@ -30,6 +30,7 @@ public class ImportJobContext {
         CSCA,
         AUTHENTICATION,
         UPLOAD,
+        DECA
     }
 
     @AllArgsConstructor
