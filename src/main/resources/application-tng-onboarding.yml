@@ -39,6 +39,11 @@ dgc:
         - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/UP/signed/.+\.json$
         - UPLOAD
         - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/DECA/signed/.+\.json$
+        - DECA
+        - JSON
     - name: ParseTrustedIssuers
       args:
         - ^who_trustlist/tng-participants-[\w-]+/(?<COUNTRYALPHA3>.{3})/onboarding/(?<DOMAIN>[\w-]+)/ISSUER/signed/.+\.json$
@@ -56,6 +61,9 @@ dgc:
     - name: RemoveExistingCertificatesFromContext
       args:
         - AUTHENTICATION
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - DECA
     - name: RemoveExistingIssuersFromContext
 
     - name: SaveCertificatesInDb
@@ -67,4 +75,7 @@ dgc:
     - name: SaveCertificatesInDb
       args:
         - AUTHENTICATION
+    - name: SaveCertificatesInDb
+      args:
+        - DECA
     - name: SaveTrustedIssuersInDb
