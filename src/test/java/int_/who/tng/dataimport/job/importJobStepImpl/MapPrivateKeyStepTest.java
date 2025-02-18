@@ -72,7 +72,6 @@ public class MapPrivateKeyStepTest {
         addCertificate(context, certificateWithOtherType3, ImportJobContext.CertificateType.DECA);
         addCertificate(context, certificateWithOtherKey1, ImportJobContext.CertificateType.UPLOAD);
         addCertificate(context, certificateWithOtherKey2, ImportJobContext.CertificateType.UPLOAD);
-        addCertificate(context, certificateWithOtherKey2, ImportJobContext.CertificateType.UPLOAD);
 
         X509Certificate keyWrapper =
             CertificateTestUtils.generateCertificate(keyPair, TEST_COUNTRY_CODE, "Key Wrapper");
