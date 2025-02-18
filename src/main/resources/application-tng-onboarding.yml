@@ -3,7 +3,7 @@ dgc:
     # WHO Trustlist
     - name: DownloadFile
       args:
-        - ${TNG_ONBOARDING_ARCHIVE_URL:https://github.com/WorldHealthOrganization/tng-participants-dev/archive/refs/heads/main.zip}
+        - ${TNG_ONBOARDING_ARCHIVE_URL:https://github.com/WorldHealthOrganization/tng-participants-prod/archive/refs/heads/main.zip}
         - who_trustlist.zip
     - name: ExtractZip
       args:
@@ -66,6 +66,15 @@ dgc:
         - DECA
     - name: RemoveExistingIssuersFromContext
 
+    - name: SaveCertificatesInDb
+      args:
+        - CSCA
+    - name: SaveCertificatesInDb
+      args:
+        - UPLOAD
+    - name: SaveCertificatesInDb
+      args:
+        - AUTHENTICATION
     - name: SaveCertificatesInDb
       args:
         - DECA
