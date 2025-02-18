@@ -24,6 +24,7 @@ public class RemoveIgnoredCountriesFromContextTest {
     private static final String TEST_COUNTRY_CODE_1 = "AA";
     private static final String TEST_COUNTRY_CODE_2 = "BB";
     private static final String TEST_COUNTRY_CODE_3 = "CC";
+    private static final String TEST_COUNTRY_CODE_4 = "DD";
 
     @Test
     void testCountriesAreRemoved() throws Exception {
@@ -37,16 +38,19 @@ public class RemoveIgnoredCountriesFromContextTest {
             CertificateTestUtils.generateCertificate(keyPair, TEST_COUNTRY_CODE_3, "Testcert 3");
         X509Certificate certificate4 =
             CertificateTestUtils.generateCertificate(keyPair, TEST_COUNTRY_CODE_3, "Testcert 4");
+        X509Certificate certificate5 =
+                CertificateTestUtils.generateCertificate(keyPair, TEST_COUNTRY_CODE_4, "Testcert 5");
 
         ImportJobContext context = new ImportJobContext();
         addCertificate(context, certificate1, ImportJobContext.CertificateType.DSC, TEST_COUNTRY_CODE_1);
         addCertificate(context, certificate2, ImportJobContext.CertificateType.UPLOAD, TEST_COUNTRY_CODE_2);
         addCertificate(context, certificate3, ImportJobContext.CertificateType.AUTHENTICATION, TEST_COUNTRY_CODE_3);
         addCertificate(context, certificate4, ImportJobContext.CertificateType.CSCA, TEST_COUNTRY_CODE_3);
+        addCertificate(context, certificate5, ImportJobContext.CertificateType.DECA, TEST_COUNTRY_CODE_4);
 
         removeIgnoredCountriesStep.exec(context, TEST_COUNTRY_CODE_1, TEST_COUNTRY_CODE_3);
 
-        Assertions.assertEquals(1, context.getParsedCertificates().size());
+        Assertions.assertEquals(2, context.getParsedCertificates().size());
         Assertions.assertEquals(certificate2, context.getParsedCertificates().get(0).getParsedCertificate());
     }
 

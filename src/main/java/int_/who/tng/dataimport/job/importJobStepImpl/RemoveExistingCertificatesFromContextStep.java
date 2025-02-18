@@ -29,7 +29,7 @@ public class RemoveExistingCertificatesFromContextStep implements ImportJobStep 
             context.getParsedCertificates()
                 .removeIf(certificateEntry -> signerInformationRepository.getFirstByThumbprint(
                     certificateEntry.getThumbprint()).isPresent());
-        } else { // CSCA, UPLOAD or AUTH
+        } else { // CSCA, UPLOAD, DECA or AUTH
             context.getParsedCertificates()
                 .removeIf(
                     certificateEntry -> trustedPartyRepository.getFirstByThumbprint(certificateEntry.getThumbprint())

@@ -36,6 +36,9 @@ public class AddCertificateStepTest {
             CertificateTestUtils.generateCertificate(keyPair, TEST_CERT_COUNTRY_CODE, "Test Cert CSCA");
         X509Certificate certificateDsc =
             CertificateTestUtils.generateCertificate(keyPair, TEST_CERT_COUNTRY_CODE, "Test Cert DSC");
+        X509Certificate certificateDeca =
+                CertificateTestUtils.generateCertificate(keyPair, TEST_CERT_COUNTRY_CODE, "Test Cert DECA");
+
 
         ImportJobContext context = new ImportJobContext();
 
@@ -44,8 +47,9 @@ public class AddCertificateStepTest {
             "AUTHENTICATION");
         addCertificateStep.exec(context, Base64.getEncoder().encodeToString(certificateCsca.getEncoded()), "CSCA");
         addCertificateStep.exec(context, Base64.getEncoder().encodeToString(certificateDsc.getEncoded()), "DSC");
+        addCertificateStep.exec(context, Base64.getEncoder().encodeToString(certificateDeca.getEncoded()), "DECA");
 
-        Assertions.assertEquals(4, context.getParsedCertificates().size());
+        Assertions.assertEquals(5, context.getParsedCertificates().size());
         for (ImportJobContext.CertificateEntry certificateEntry : context.getParsedCertificates()) {
             switch (certificateEntry.getCertificateType()) {
                 case DSC ->
@@ -56,6 +60,8 @@ public class AddCertificateStepTest {
                     ImportJobContext.CertificateType.CSCA);
                 case UPLOAD -> checkParsedCertificateEntry(certificateEntry, certificateUpload,
                     ImportJobContext.CertificateType.UPLOAD);
+                case DECA -> checkParsedCertificateEntry(certificateEntry, certificateDeca,
+                        ImportJobContext.CertificateType.DECA);
             }
         }
     }

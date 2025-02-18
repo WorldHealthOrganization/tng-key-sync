@@ -61,13 +61,17 @@ public class MapPrivateKeyStepTest {
             CertificateTestUtils.generateCertificate(keyPairOtherCerts, TEST_COUNTRY_CODE, "Upload Testcert 3");
         X509Certificate certificateWithOtherKey2 =
             CertificateTestUtils.generateCertificate(keyPairOtherCerts, TEST_COUNTRY_CODE, "Upload Testcert 4");
+        X509Certificate certificateWithOtherType3 =
+                CertificateTestUtils.generateCertificate(keyPair, TEST_COUNTRY_CODE, "DECA Testcert");
 
         ImportJobContext context = new ImportJobContext();
         addCertificate(context, certificate1, ImportJobContext.CertificateType.UPLOAD);
         addCertificate(context, certificate2, ImportJobContext.CertificateType.UPLOAD);
         addCertificate(context, certificateWithOtherType1, ImportJobContext.CertificateType.AUTHENTICATION);
         addCertificate(context, certificateWithOtherType2, ImportJobContext.CertificateType.CSCA);
+        addCertificate(context, certificateWithOtherType3, ImportJobContext.CertificateType.DECA);
         addCertificate(context, certificateWithOtherKey1, ImportJobContext.CertificateType.UPLOAD);
+        addCertificate(context, certificateWithOtherKey2, ImportJobContext.CertificateType.UPLOAD);
         addCertificate(context, certificateWithOtherKey2, ImportJobContext.CertificateType.UPLOAD);
 
         X509Certificate keyWrapper =
