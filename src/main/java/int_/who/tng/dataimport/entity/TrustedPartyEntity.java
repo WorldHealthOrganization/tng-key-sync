@@ -91,7 +91,7 @@ public class TrustedPartyEntity extends FederatedEntity {
     String signature;
 
     /**
-     * Type of the certificate (Authentication, Upload, CSCA).
+     * Type of the certificate (Authentication, Upload, CSCA, DECA).
      */
     @Column(name = "certificate_type", nullable = false, length = 25)
     @Enumerated(EnumType.STRING)
@@ -128,6 +128,11 @@ public class TrustedPartyEntity extends FederatedEntity {
          * Country Signing Certificate Authority certificate (NBCSCA).
          */
         CSCA,
+
+        /**
+         * Country Signing Certificate Authority certificate for Data Exchange Trust Service (DECA).
+         */
+        DECA,
 
         /**
          * Certificate used to offline sign entries in database (NBTA).

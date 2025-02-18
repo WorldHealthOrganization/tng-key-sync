@@ -111,7 +111,7 @@ public class SaveCertificatesInDbStepTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD"})
+    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD", "DECA"})
     void testSaveTrustedParty(String type) throws Exception {
         KeyPair keyPair = CertificateTestUtils.generateKeyPair();
 
@@ -169,7 +169,7 @@ public class SaveCertificatesInDbStepTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD"})
+    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD", "DECA"})
     void testSaveTrustedPartyWithNonDefaultDomain(String type) throws Exception {
         KeyPair keyPair = CertificateTestUtils.generateKeyPair();
 
@@ -197,7 +197,7 @@ public class SaveCertificatesInDbStepTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD"})
+    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD", "DECA"})
     void testItShouldNotInsertEntriesWithoutSignatureTrustedParty(String type) throws Exception {
         KeyPair keyPair = CertificateTestUtils.generateKeyPair();
 
@@ -274,7 +274,7 @@ public class SaveCertificatesInDbStepTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD"})
+    @ValueSource(strings = {"CSCA", "AUTHENTICATION", "UPLOAD", "DECA"})
     void testItShouldNotInsertEntriesWithoutCountryAttributeTrustedParty(String type) throws Exception {
         KeyPair keyPair = CertificateTestUtils.generateKeyPair();
 

@@ -45,7 +45,7 @@ public class RemoveExistingCertificatesFromContextTest {
     private static final String TEST_COUNTRY_CODE = "DE";
 
     @ParameterizedTest
-    @ValueSource(strings = {"UPLOAD", "CSCA", "AUTHENTICATION"})
+    @ValueSource(strings = {"UPLOAD", "CSCA", "AUTHENTICATION", "DECA"})
     void testExistingCertificatesAreRemovedTrustedParty(String type) throws Exception {
         KeyPair keyPair = CertificateTestUtils.generateKeyPair();
 
