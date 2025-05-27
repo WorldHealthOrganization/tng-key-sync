@@ -64,7 +64,11 @@ dgc:
         - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/UP/signed/.+\.json$
         - UPLOAD
         - JSON
-
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/DECA/signed/.+\.json$
+        - DECA
+        - JSON
 
     ## Sign DSC with Upload Certificates
     - name: MapPrivateKey
@@ -97,6 +101,9 @@ dgc:
     - name: RemoveExistingCertificatesFromContext
       args:
         - AUTHENTICATION
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - DECA
 
     - name: SaveCertificatesInDb
       args:
@@ -110,3 +117,6 @@ dgc:
     - name: SaveCertificatesInDb
       args:
         - AUTHENTICATION
+    - name: SaveCertificatesInDb
+      args:
+        - DECA
