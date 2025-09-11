@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@SpringBootTest(classes = {RemoveExistingIssuersFromContextStep.class})
 public class RemoveExistingTrustedIssuersFromContextTest {
 
     @Autowired

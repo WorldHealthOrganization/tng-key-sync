@@ -1,5 +1,6 @@
 package int_.who.tng.dataimport.job.importJobStepImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import int_.who.tng.dataimport.job.ImportJobContext;
 import int_.who.tng.dataimport.testdata.TrustedIssuerTestUtils;
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.nio.charset.StandardCharsets;
 
 
-@SpringBootTest
+@SpringBootTest(classes = {ParseTrustedIssuersStep.class, ObjectMapper.class})
 public class ParseTrustedIssuerStepTest {
 
     @Autowired

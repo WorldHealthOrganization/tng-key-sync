@@ -1,5 +1,6 @@
 package int_.who.tng.dataimport.job.importJobStepImpl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.dgc.utils.CertificateUtils;
 import int_.who.tng.dataimport.job.ImportJobContext;
 import int_.who.tng.dataimport.job.ImportJobStepException;
@@ -20,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = {MapPrivateKeyStep.class, CertificateUtils.class})
 public class MapPrivateKeyStepTest {
 
     @Autowired
