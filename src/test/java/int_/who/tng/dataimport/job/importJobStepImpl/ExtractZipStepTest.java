@@ -1,5 +1,6 @@
 package int_.who.tng.dataimport.job.importJobStepImpl;
 
+import eu.europa.ec.dgc.utils.CertificateUtils;
 import int_.who.tng.dataimport.job.ImportJobContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = {ExtractZipStep.class})
 public class ExtractZipStepTest {
 
     @Autowired

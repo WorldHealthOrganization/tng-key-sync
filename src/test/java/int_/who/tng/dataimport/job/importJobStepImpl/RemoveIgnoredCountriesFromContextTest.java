@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = {RemoveIgnoredCountriesStep.class, CertificateUtils.class})
 public class RemoveIgnoredCountriesFromContextTest {
 
     @Autowired

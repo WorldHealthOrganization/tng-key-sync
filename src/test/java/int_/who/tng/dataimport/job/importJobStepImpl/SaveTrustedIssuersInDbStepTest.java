@@ -15,7 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@SpringBootTest(classes = SaveTrustedIssuersInDbStep.class)
 public class SaveTrustedIssuersInDbStepTest {
 
     @Autowired
