@@ -26,7 +26,6 @@
         <!-- dependency versions -->
         <h2.version>2.3.232</h2.version>
         <bc.version>1.81</bc.version>
-        <ddcc.lib.version>2.0.1</ddcc.lib.version>
     </properties>
 
     <repositories>
@@ -60,7 +59,7 @@
         <dependency>
             <groupId>eu.europa.ec.dgc</groupId>
             <artifactId>ddcc-gateway-lib</artifactId>
-            <version>${ddcc.lib.version}</version>
+            <version>2.2.1</version>
         </dependency>
 
         <dependency>
