@@ -1,7 +1,7 @@
 # TNG Key Import Tool
 
 This tool is designed to import CSCA and DSC Certificates
-from [EU Digital Green Certificates Gateway](https://github.com/eu-digital-green-certificates/dgc-gateway) and TNG
+from TNG
 Onboarding Repositories into Smart Trust Network Gateway.
 
 ## Usage
@@ -170,30 +170,23 @@ it is required to set the attribute ```failOnCriticalException``` to ```false```
 
 This tool will be shipped with some prepared workflows which can be activated via Spring-Profiles.
 
-### EU DSC, TNG Onboarding TrustedParty Import
+### TNG Onboarding TrustedParty Import
 
 The following steps are executed by this workflow:
 
-1. Download ZIP Archive from EU Publication Service
-2. Validate integrity of downloaded ZIP Archive
-3. Extract ZIP Archive
-4. Parse all DSC Certificates
-5. Download ZIP Archive from TNG Onboarding Repository
-6. Extract ZIP Archive
-7. Parse all TLS, SCA and UP Certificates
-8. Try to link UP_SYNC PrivateKey to UP Certificates
-9. Sign DSC Certificates with UP Certificates having a PrivateKey (Upload Signature)
-10. Remove Certificates from Countries which are on the Ignore-List
-11. Remove Certificates which are already present in Database
-12. Persist remaining Certificates (DSC, TLS, SCA, UP)
+1. Download ZIP Archive from TNG Onboarding Repository
+2. Extract ZIP Archive
+3. Parse all TLS, SCA and UP Certificate
+4. Try to link UP_SYNC PrivateKey to UP Certificates
+5. Sign DSC Certificates with UP Certificates having a PrivateKey (Upload Signature)
+6. Remove Certificates from Countries which are on the Ignore-List 
+7. Remove Certificates which are already present in Database 
+8. Persist remaining Certificates (DSC, TLS, SCA, UP)
 
 The following workflow-specific environment variables need to be set:
 
 | ENV                        | Description                                                                                            | Optional | Example (Default if optional)                                                                |
 |----------------------------|--------------------------------------------------------------------------------------------------------|----------|----------------------------------------------------------------------------------------------|
-| EUDCC_ARCHIVE_URL          | URL to Download the Publication Archive of EU DCC                                                      | Yes      | https://ec.europa.eu/assets/eu-dcc/dcc_trustlist.zip                                         |    
-| EUDCC_SIGNATURE_URL        | URL to Download the Signature File of Publication Archive of EU DCC                                    | Yes      | https://ec.europa.eu/assets/eu-dcc/dcc_trustlist.zip.sig.txt                                 |    
-| EUDCC_SIGNATURE_SIGNERCERT | SHA-256 thumbprints (HEX, lowercase) of allowed signer certificate for the EU DCC Publication Archive  | No       | 84b0309cb751d0660f48d96b7aff5ce950e741916b40264bc7d7c31d875e063b                             |    
 | TNG_ONBOARDING_ARCHIVE_URL | URL to Download the Archive with onboarded Certificates for TNG                                        | Yes      | https://github.com/WorldHealthOrganization/tng-participants-prod/archive/refs/heads/main.zip |
 | TNG_UPSYNC_KEYSTOREPATH    | Path to KeyStore (JKS or PKCS#12) holding the UP_SYNC PrivateKey                                       | No       | /var/keys/up_sync.p12                                                                        |    
 | TNG_UPSYNC_KEYSTOREPASS    | Password of the KeyStore and the KeyEntry                                                              | No       | s3cr3t                                                                                       |

@@ -1,0 +1,98 @@
+dgc:
+  import-job-steps:
+
+    # WHO Trustlist
+    - name: DownloadFile
+      args:
+        - ${TNG_ONBOARDING_ARCHIVE_URL:https://github.com/WorldHealthOrganization/tng-participants-prod/archive/refs/heads/main.zip}
+        - who_trustlist.zip
+    - name: ExtractZip
+      args:
+        - who_trustlist.zip
+        - who_trustlist
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/TLS/signed/.+\.json$
+        - AUTHENTICATION
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/SCA/signed/.+\.json$
+        - CSCA
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/DCC/UP/signed/.+\.json$
+        - UPLOAD
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/TLS/signed/.+\.json$
+        - AUTHENTICATION
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/SCA/signed/.+\.json$
+        - CSCA
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/UP/signed/.+\.json$
+        - UPLOAD
+        - JSON
+    - name: ParseCertificates
+      args:
+        - ^who_trustlist/tng-participants-[\w-]+/.{3}/onboarding/(?<DOMAIN>[\w-]+)/DECA/signed/.+\.json$
+        - DECA
+        - JSON
+
+    ## Sign DSC with Upload Certificates
+    - name: MapPrivateKey
+      args:
+        - UPLOAD                     # CertificateType
+        - ${TNG_UPSYNC_KEYSTOREPATH} # KeyStore Path
+        - ${TNG_UPSYNC_KEYSTOREPASS} # KeyStore Password
+        - ${TNG_UPSYNC_ALIAS}        # Key Alias
+        - ${TNG_UPSYNC_KEYSTOREPASS} # Key Password
+
+    - name: SignCertificates
+      args:
+        - UPLOAD
+        - DSC
+
+
+    ## Persistence (Filter unwanted and already existing Data and persist new entries)
+    - name: RemoveIgnoredCountries
+      args: ${TNG_IGNORECOUNTRIES:}
+
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - DSC
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - CSCA
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - UPLOAD
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - AUTHENTICATION
+    - name: RemoveExistingCertificatesFromContext
+      args:
+        - DECA
+
+    - name: SaveCertificatesInDb
+      args:
+        - DSC
+    - name: SaveCertificatesInDb
+      args:
+        - CSCA
+    - name: SaveCertificatesInDb
+      args:
+        - UPLOAD
+    - name: SaveCertificatesInDb
+      args:
+        - AUTHENTICATION
+    - name: SaveCertificatesInDb
+      args:
+        - DECA
