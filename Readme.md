@@ -1,3 +1,6 @@
+# Disclaimer  
+Please note that the EU DSC Trust List import is no longer being used or supported. The workflow has been deprecated and is no longer part of the current import functionality.
+
 # TNG Key Import Tool
 
 This tool is designed to import CSCA and DSC Certificates
