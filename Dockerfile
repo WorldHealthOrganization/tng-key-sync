@@ -7,4 +7,4 @@ COPY ./target/extracted/spring-boot-loader/ ./
 # COPY ./target/extracted/snapshot-dependencies/ ./
 COPY ./target/extracted/application/ ./
 
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
