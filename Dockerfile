@@ -7,5 +7,5 @@ COPY ./target/extracted/spring-boot-loader/ ./
 # COPY ./target/extracted/snapshot-dependencies/ ./
 COPY ./target/extracted/application/ ./
 
-# ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
-ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar tng-key-sync-1.0-SNAPSHOT.jar" ]
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
+#ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar tng-key-sync-1.0-SNAPSHOT.jar" ]
