@@ -57,8 +57,9 @@ jobs:
       # **Extra Debug Step: Verify JarLauncher in JAR file**
       - name: Verify JarLauncher in JAR file
         run: |
-          echo "Checking if the JAR contains the necessary JarLauncher class..."
-          jar tf target/tng-key-sync-2.2.3-a9fecf8.jar
+          JAR_FILE=$(ls target/tng-key-sync-*.jar)
+          echo "Checking JAR file: $JAR_FILE"
+          jar tf "$JAR_FILE"
 
 #      - name: Extract JAR Layers
 #        run: mkdir ./target/extracted && java -Djarmode=layertools -jar ./target/*.jar extract --destination ./target/extracted
