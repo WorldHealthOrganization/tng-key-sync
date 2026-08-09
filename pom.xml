@@ -25,7 +25,7 @@
         <github.project>tng-data-import</github.project>
         <!-- dependency versions -->
         <h2.version>2.3.232</h2.version>
-        <bc.version>1.81</bc.version>
+        <bc.version>1.84</bc.version>
     </properties>
 
     <repositories>
